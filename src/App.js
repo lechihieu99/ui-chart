@@ -1,4 +1,6 @@
 import './App.css';
+import "./scss/index.scss";
+import "./scss/chart.scss";
 import Sidebar from './components/Sidebar';
 import Chart from "./components/Chart"
 import Layout from './components/Layout';
