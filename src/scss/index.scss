@@ -1,0 +1,43 @@
+@import "./_base";
+@import "./_mixin";
+
+
+.btn-shadow-style{
+    box-shadow: 3px 3px 0 black;
+    font-weight: 700;
+    &:hover{
+        transform: translateX(1px);
+        box-shadow: 2px 2px 0 black;
+    }
+}
+.shadow-style{
+    box-shadow: 3px 3px 0 black;
+}
+
+.stutable{
+    thead{
+        margin-bottom: 1rem;
+        td{
+            font-weight: 700;
+        }
+    }
+    tbody{
+        tr{
+            border-bottom: 1px solid #ececec;
+            padding: 1rem .2rem;
+            // &:hover{
+            //     background-color: #509cdb;
+            //     color: white;
+            // }
+        }
+        tr:nth-child(odd){
+            background-color: white;
+        }
+        tr:nth-child(even){
+            background-color: rgb(199, 215, 224);
+        }
+
+        
+
+    }
+}

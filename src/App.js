@@ -1,24 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import "./scss/index.scss";
+import "./scss/chart.scss";
+import Sidebar from './components/Sidebar';
+import Chart from "./components/Chart"
+import Layout from './components/Layout';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+import Dashboard from './page/Dashboard';
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<Layout />}>
+      <Route path='/' element={<Dashboard />} />
+    </Route>
+  )
+)
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RouterProvider router={router} />
   );
 }
 
