@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
-import {Link, NavLink} from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import StudentBoard from '../components/StudentBoard';
 
 
@@ -104,7 +104,7 @@ function Dashboard() {
               {students.map(stu => (
                 <tr key={stu.id}>
                   <td >
-                    <Link to="/" className='flex items-center'>
+                    <Link to={`/object-user/${stu.id}`} className='flex items-center'>
                       <img src={stu.url} alt="" className='w-10 h-10 rounded-full object-center' />
                       <span className='text-light text-black ms-2'>{stu.name}</span>
                     </Link>

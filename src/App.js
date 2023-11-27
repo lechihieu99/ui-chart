@@ -14,11 +14,13 @@ import {
 } from "react-router-dom";
 
 import Dashboard from './page/Dashboard';
+import AddProjectPage from './page/AddProject';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
       <Route path='/' element={<Dashboard />} />
+      <Route path='/object-user/:id' element={<AddProjectPage />} />
     </Route>
   )
 )
