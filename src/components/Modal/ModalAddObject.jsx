@@ -22,23 +22,6 @@ const axiosApi = axios.create({
 const ModalAddObject = ({ show, setShow }) => {
 
     const [isCheck, setIsCheck] = useState(false)
-    // const [data, setData] = useState()
-
-    // useEffect(() => {
-    //     const data = {
-    //         "prompt": "hello",
-    //         "model": "hello"
-    //     }
-
-    //     const callApi = async () => {
-    //         await axiosApi.post('/text-to-speech', JSON.stringify(data)
-    //         ).then((res) => setData(res.data.choices[0].message.content))
-    //             .catch((error) => console.log(error))
-    //     }
-
-    //     callApi()
-    // }, [])
-
     const checkBoxChange = (e) => {
         setIsCheck(e.target.checked)
     }

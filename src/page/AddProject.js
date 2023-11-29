@@ -3,75 +3,13 @@ import Header from "../components/Header";
 import StudentBoard from "../components/StudentBoard";
 import { ArrowLeft, Plus, Info, Pencil, LinkSimpleHorizontal, X } from '@phosphor-icons/react'
 import ModalAddObject from "../components/Modal/ModalAddObject";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import Image1 from '../asset/images/image.jpg'
 import ModalInformation from "../components/Modal/ModalInformation";
-const students = [
-  {
-    id: 1,
-    name: "Erikson",
-    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "male",
-  },
-  {
-    id: 2,
-    name: "Dasha Elano",
-    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "female",
-  },
-  {
-    id: 1,
-    name: "Erikson",
-    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "male",
-  },
-  {
-    id: 2,
-    name: "Dasha Elano",
-    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "female",
-  },
-  {
-    id: 1,
-    name: "Erikson",
-    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "male",
-  },
-  {
-    id: 2,
-    name: "Dasha Elano",
-    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "female",
-  },
-  {
-    id: 1,
-    name: "Erikson",
-    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "male",
-  },
-  {
-    id: 2,
-    name: "Dasha Elano",
-    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
-    email: "erik@gmail.com",
-    class: "IS207",
-    gender: "female",
-  },
-];
+import Chart from "../components/Chart";
+import Column from "../components/Column";
+
 
 const objectUser = [
   {
@@ -94,10 +32,16 @@ const objectUser = [
 ]
 
 const AddProjectPage = () => {
-  const [show, setShow] = useState(false)
+  const students = useSelector(state => state.students);
+  const [student, setStudent] = useState({});
   const [showInfo, setShowInfo] = useState(false)
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const [show, setShow] = useState(false)
 
-  const [info, setInfo] = useState()
+  const [info, setInfo] = useState();
+
+  
 
   const showModalInfo = (item) => {
     setInfo(item)
@@ -107,12 +51,15 @@ const AddProjectPage = () => {
   const changeFile = (e) => {
     console.log(e)
   }
+  useEffect(() => {
+    setStudent(students.find(stu => stu.id===parseInt(id)));
+  }, [])
   return (
     <>
-      <div className="w-full h-screen">
+      <div className="w-full h-screen overflow-y-auto">
         <Header />
         <div className="grid grid-cols-12 gap-4">
-          <div className="flex justify-center items-center cursor-pointer">
+          <div onClick={() => navigate(-1)} className="flex justify-center items-center cursor-pointer">
             <ArrowLeft size={24} color='white' weight='bold' />
           </div>
           <div className="col-span-8">
@@ -127,12 +74,12 @@ const AddProjectPage = () => {
           </div>
         </div>
         {/* Student Detail board */}
-        <div className="flex w-full pt-4 pb-4" style={{ height: 'calc(100% - 80px)' }}>
+        <div className="flex w-full pt-4 pb-4">
           <div className="w-1/4 h-full">
-            <StudentBoard id={students[0].id} name={students[0].name} url={students[0].url} classname={students[0].class} gender={students[0].gender} />
+            <StudentBoard id={student.id} name={student.name} url={student.url} classname={student.class} gender={student.gender} />
           </div>
           <div className="w-3/4">
-            <span className=" font-semibold">Thêm đối tượng cho <span className="text-[#7D7D7D]">{students[0].id} - {students[0].name}</span></span>
+            <span className=" font-semibold">Thêm đối tượng cho <span className="text-[#7D7D7D]">{student.id} - {student.name}</span></span>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
               {objectUser.map((item, idx) => (
                 <div className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:border-1 hover:border-black ${info && "border-1 border-black"}`}>
@@ -153,6 +100,14 @@ const AddProjectPage = () => {
                 <Plus size={24} color='white' />
               </div>
               <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
+              {/* Biểu đồ Chart*/}
+              <span>Data dữ liệu theo dạng JSON:</span>
+              <div className="w-full bg-white p-4 mt-2 rounded-xl flex justify-start items-center">
+                <span>
+                  <Chart />
+                </span>
+              </div>
+              {/* Tài sản dữ liệu */}
               <span>Tài sản/dữ liệu của đối tượng</span>
               <label for="file" className="w-full bg-[rgba(255,255,255,0.4)] mt-2 pt-8 pb-8 rounded-xl flex justify-center items-center cursor-pointer">
                 {info ? (
@@ -166,6 +121,7 @@ const AddProjectPage = () => {
               </label>
               <input type="file" id="file" name="file" className="hidden" onChange={changeFile} accept="image/*,application/pdf,audio/mpeg3"></input>
               <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
+              {/* Danh sách dữ liệu */}
               <span>Data dữ liệu theo dạng JSON:</span>
               <div className="w-full bg-white p-4 mt-2 rounded-xl flex justify-start items-center">
                 <span>{`{
@@ -173,6 +129,28 @@ const AddProjectPage = () => {
                   }`}
                 </span>
               </div>
+              <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
+              <span>Dữ liệu model AI:</span>
+              <div className="w-full bg-white p-4 mt-2 rounded-xl flex justify-start items-center">
+                <span>
+                  Link drive:
+                </span>
+                <form className="flex-1 flex items-center" action="javascript:void(0)" onSubmit={(event) => {alert("Cập nhật link thành công")}}>
+                  <input type="text" className="w-full ms-1 rounded-md outline-0" />
+                  <button type="submit"></button>
+                </form>
+              </div>
+              <label for="file" className="w-full bg-[rgba(255,255,255,0.4)] mt-2 pt-8 pb-8 rounded-xl flex justify-center items-center cursor-pointer">
+                {info ? (
+                  <>
+                    <Plus size={20} color="black" />
+                  </>
+                ) : (
+                  <span className="text-gray-400">Thêm trực tiếp các file model AI</span>
+
+                )}
+              </label>
+              <input type="file" id="file" name="file" className="hidden" onChange={changeFile} accept="image/*,application/pdf,audio/mpeg3"></input>
             </div>
           </div>
         </div>
