@@ -1,14 +1,83 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import StudentBoard from "../components/StudentBoard";
-import { ArrowLeft, Plus, Info, Pencil, LinkSimpleHorizontal, X } from '@phosphor-icons/react'
+import { ArrowLeft, Plus, Info, Pencil, LinkSimpleHorizontal, X, CircleNotch } from '@phosphor-icons/react'
 import ModalAddObject from "../components/Modal/ModalAddObject";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Image1 from '../asset/images/image.jpg'
 import ModalInformation from "../components/Modal/ModalInformation";
+import ModalEdit from "../components/Modal/ModalEdit";
+
 import Chart from "../components/Chart";
 import Column from "../components/Column";
+
+const students = [
+  {
+    id: 1,
+    name: "Erikson",
+    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "male",
+  },
+  {
+    id: 2,
+    name: "Dasha Elano",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "female",
+  },
+  {
+    id: 1,
+    name: "Erikson",
+    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "male",
+  },
+  {
+    id: 2,
+    name: "Dasha Elano",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "female",
+  },
+  {
+    id: 1,
+    name: "Erikson",
+    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "male",
+  },
+  {
+    id: 2,
+    name: "Dasha Elano",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "female",
+  },
+  {
+    id: 1,
+    name: "Erikson",
+    url: "https://cc-prod.scene7.com/is/image/CCProdAuthor/portrait-photography_P6b_379x392?$pjpeg$&jpegSize=100&wid=378",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "male",
+  },
+  {
+    id: 2,
+    name: "Dasha Elano",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUb3AURQ_YR7QnqzsvYP0YHeptFlcr3ivvug&usqp=CAU",
+    email: "erik@gmail.com",
+    class: "IS207",
+    gender: "female",
+  },
+];
 
 
 const objectUser = [
@@ -35,24 +104,92 @@ const AddProjectPage = () => {
   const students = useSelector(state => state.students);
   const [student, setStudent] = useState({});
   const [showInfo, setShowInfo] = useState(false)
-  const {id} = useParams();
+  const [showEdit, setShowEdit] = useState(false)
+
+  const [loadFile, setLoadFile] = useState(false)
+  const [passFile, setPassFile] = useState(false)
+  const { id } = useParams();
   const navigate = useNavigate();
   const [show, setShow] = useState(false)
 
   const [info, setInfo] = useState();
 
-  
+
+
+  const [allInfo, setAllInfo] = useState([])
+
+  useEffect(() => {
+    console.log(allInfo)
+  }, [allInfo])
 
   const showModalInfo = (item) => {
     setInfo(item)
     setShowInfo(true)
   }
 
+  const showModalEdit = (item) => {
+    setInfo(item)
+    setShowEdit(true)
+  }
+
   const changeFile = (e) => {
     console.log(e)
+    setLoadFile(true)
+
+    setTimeout(() => {
+      setLoadFile(false)
+      setPassFile(true)
+    }, 3000)
+
+    const files = e.currentTarget.files;
+    Object.keys(files).forEach(i => {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        //server call for uploading or reading the files one-by-one
+        //by using 'reader.result' or 'file'
+        setTimeout(() => {
+          // document.getElementById('preview').style.width = 100
+          // document.getElementById('preview').style.height = 100
+          document.getElementById('preview').setAttribute('src', e.target.result)
+        }, 3100)
+
+        console.log(e.target.result)
+      }
+      reader.readAsDataURL(file);
+    })
+
+    // let files = document.getElementById('file').files
+    // console.log(files)
+
+    // const reader = new FileReader()
+    // reader.onload = async (event) => {
+    //   // document.getElementById('preview').style.width = '100%'
+    //   // document.getElementById('preview').style.height = 100
+    //   // document.getElementById('preview').setAttribute('src', event.target.result)
+    //   console.log(event.target.result)
+    // }
+
+    // if (files?.length === 1) {
+    //   reader.readAsDataURL(files[0])
+    // }
+    // else {
+    //   if (files?.length > 1) {
+    //     for (let obj in files)
+    //       reader.readAsDataURL(files[obj])
+    //   }
+    // }
+
+  }
+
+  const handleDelete = (item) => {
+    var test = allInfo;
+    setAllInfo(test?.filter((el) => {
+      return el.name !== item.name
+    }))
   }
   useEffect(() => {
-    setStudent(students.find(stu => stu.id===parseInt(id)));
+    setStudent(students.find(stu => stu.id === parseInt(id)));
   }, [])
   return (
     <>
@@ -81,16 +218,16 @@ const AddProjectPage = () => {
           <div className="w-3/4">
             <span className=" font-semibold">Thêm đối tượng cho <span className="text-[#7D7D7D]">{student.id} - {student.name}</span></span>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
-              {objectUser.map((item, idx) => (
+              {allInfo.map((item, idx) => (
                 <div className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:border-1 hover:border-black ${info && "border-1 border-black"}`}>
                   <div className="cursor-pointer" onClick={() => setInfo(item)}>{item.id}. {item.name}</div>
                   <div>Điểm số: {item.point} điểm</div>
                   <div>Tỷ trọng: {item.ratio}</div>
                   <div className="flex items-center justify-center gap-2">
                     <Info size={20} color='black' className="cursor-pointer" onClick={() => showModalInfo(item)} />
-                    <Pencil size={20} color='black' className="cursor-pointer" />
-                    <LinkSimpleHorizontal size={20} color='black' className="cursor-pointer" />
-                    <X size={20} color='black' className="cursor-pointer" />
+                    <Pencil size={20} color='black' className="cursor-pointer" onClick={() => showModalEdit(item)} />
+                    <LinkSimpleHorizontal size={20} color='black' />
+                    <X size={20} color='black' className="cursor-pointer" onClick={() => handleDelete(item)} />
                   </div>
                 </div>
               ))}
@@ -100,6 +237,7 @@ const AddProjectPage = () => {
                 <Plus size={24} color='white' />
               </div>
               <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
+
               {/* Biểu đồ Chart*/}
               <span>Data dữ liệu theo dạng JSON:</span>
               <div className="w-full bg-white p-4 mt-2 rounded-xl flex justify-start items-center">
@@ -108,18 +246,39 @@ const AddProjectPage = () => {
                 </span>
               </div>
               {/* Tài sản dữ liệu */}
-              <span>Tài sản/dữ liệu của đối tượng</span>
-              <label for="file" className="w-full bg-[rgba(255,255,255,0.4)] mt-2 pt-8 pb-8 rounded-xl flex justify-center items-center cursor-pointer">
-                {info ? (
+              <span>Tài sản/dữ liệu của đối tượng: <span className="italic">{info?.name}</span></span>
+
+              <div className="w-full bg-[rgba(255,255,255,0.4)] mt-2  rounded-xl flex justify-center items-center">
+                {info ? !loadFile ? passFile ? (
                   <>
-                    <Plus size={20} color="black" />
+                    <div className="w-full h-full flex pt-8 pb-8 gap-8">
+                      <img id="preview" className={`${passFile && "h-32 w-32 object-fit"}`} />
+                      <div className="h-32 w-32 flex justify-center items-center bg-yellow-200">
+                        <Plus size={20} color="black" />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <label for="file" className="w-full h-full flex pt-8 pb-8 justify-center items-center cursor-pointer">
+                      <Plus size={20} color="black" />
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-full h-full flex flex-col items-center justify-center">
+                      <CircleNotch size={24} color='red' className="animate-spin" />
+                      <span className="text-gray-400">Vui lòng đợi máy chủ xử lý dữ liệu...</span>
+                    </div>
                   </>
                 ) : (
                   <span className="text-gray-400">Vui lòng thêm đối tượng để thực hiện bổ sung tài sản/dữ liệu của đối tượng</span>
 
                 )}
-              </label>
-              <input type="file" id="file" name="file" className="hidden" onChange={changeFile} accept="image/*,application/pdf,audio/mpeg3"></input>
+
+              </div>
+              {/*  */}
+              <input type="file" id="file" name="file" multiple className="hidden" onChange={changeFile} accept="image/*,application/pdf,audio/mpeg3"></input>
               <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
               {/* Danh sách dữ liệu */}
               <span>Data dữ liệu theo dạng JSON:</span>
@@ -135,7 +294,7 @@ const AddProjectPage = () => {
                 <span>
                   Link drive:
                 </span>
-                <form className="flex-1 flex items-center" action="javascript:void(0)" onSubmit={(event) => {alert("Cập nhật link thành công")}}>
+                <form className="flex-1 flex items-center" action="javascript:void(0)" onSubmit={(event) => { alert("Cập nhật link thành công") }}>
                   <input type="text" className="w-full ms-1 rounded-md outline-0" />
                   <button type="submit"></button>
                 </form>
@@ -155,8 +314,9 @@ const AddProjectPage = () => {
           </div>
         </div>
       </div>
-      <ModalAddObject show={show} setShow={setShow} />
+      <ModalAddObject show={show} setShow={setShow} setAllInfo={setAllInfo} allInfo={allInfo} />
       <ModalInformation data={info} show={showInfo} setShow={setShowInfo} />
+      <ModalEdit data={info} show={showEdit} setShow={setShowEdit} setInfo={setInfo} />
     </>
   )
 }

@@ -41,6 +41,10 @@ const ModalInformation = ({ data, show, setShow }) => {
                         <span className="pr-4">Đánh giá: {data?.result}</span>
                     </div>
 
+                    <div className="w-1/2 p-2 flex items-center">
+                        <span className="pr-4">Nhóm đối tượng: {data?.group}</span>
+                    </div>
+
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="w-full flex justify-end items-center ">
