@@ -18,7 +18,7 @@ import AddProjectPage from './page/AddProject';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<Layout />}>
+    <Route element={<Layout />}>  
       <Route path='/' element={<Dashboard />} />
       <Route path='/object-user/:id' element={<AddProjectPage />} />
     </Route>

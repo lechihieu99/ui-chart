@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
+// Data: <Column key={diem.thi} coor={diem} chartData={chartData} updateCoors={updateColumn}/>
 function Column(props) {
   // STATES AND STYLES AND VARIABLES
   const style = {
