@@ -1,5 +1,5 @@
 import { Star, Check } from "@phosphor-icons/react";
-import { Modal } from "flowbite-react";
+import { Badge, Modal } from "flowbite-react";
 import React, { useState } from "react";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
@@ -11,6 +11,56 @@ const options = [
 const options2 = [
     'Âm nhạc', 'Môn học', 'Sản phẩm truyền thông'
 ];
+
+const recommendLabel = [
+
+    {
+        id: '552210',
+        name: 'Poster Truyền thông',
+        point: 100,
+        ratio: 90,
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    },
+    {
+        id: '552210',
+        name: 'Nhạc Pop',
+        point: 100,
+        ratio: 90,
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    },
+    {
+        id: '552210',
+        name: 'Poster Truyền thông',
+        point: 100,
+        ratio: 80,
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    },
+    {
+        id: '552210',
+        name: 'Video dạy Tiếng Anh',
+        point: 100,
+        ratio: 50,
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    }
+
+]
+const signLabel = ['warning', 'failure', 'purple', 'pink']
 
 const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexItem }) => {
     const [isCheck, setIsCheck] = useState(false)
@@ -98,6 +148,12 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
             }, 3000)
         }
     }
+
+    const handleAddRecommendLabel = (item) => {
+        document.getElementById('name_edit').value = item.name
+        document.getElementById('point_edit').value = item.point
+        document.getElementById('ratio_edit').value = item.ratio
+    }
     return (
         <>
             <Modal size='5xl' show={show} onClose={() => setShow(false)}>
@@ -113,6 +169,17 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
                         {/* <audio src={data ? data : ""} controls /> */}
                         <input type="text" id="name_edit" class="bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" defaultValue={data?.name} required />
                         <span className="text-green-700 flex gap-2 ml-4">Tên đối tượng hợp lệ <Check size={20} color='green' /> </span>
+                    </div>
+                    <div className="w-full p-2 flex flex-wrap items-center">
+                        <span className="pr-4">Đề xuất label:</span>
+                        <div className="flex items-center gap-4 flex-wrap">
+                            {recommendLabel.map((item, idx) => (
+                                <>
+                                    <Badge color={signLabel[idx]} className="cursor-pointer" onClick={() => handleAddRecommendLabel(item)}>{item.name}</Badge>
+                                </>
+                            ))}
+
+                        </div>
                     </div>
                     <div className="w-full flex flex-wrap">
                         <div className="w-1/2 p-2 flex items-center">
