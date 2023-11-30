@@ -188,6 +188,11 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                             <input type="text" id="ratio" disabled={isCheck ? true : false} className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${isCheck && "opacity-50 cursor-no-drop"}`} placeholder="Nhập tên đối tượng" required />
                         </div>
                     </div>
+                    <div className="w-full h-8 p-2 flex items-center gap-4">
+                        <div className="w-1/3 h-full bg-blue-200"></div>
+                        <div className="w-1/3 h-full bg-red-200"></div>
+                        <div className="w-1/3 h-full bg-yellow-200"></div>
+                    </div>
                     <div className="w-full flex justify-start items-center gap-2 p-2">
                         <span className="font-semibold">Bạn có muốn thêm đối tượng theo dạng text?</span>
                         <input id="remember" type="checkbox" value="" onChange={checkBoxChange} class="w-4 h-4 border-[1px] border-black bg-gray-50" required />
