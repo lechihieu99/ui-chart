@@ -191,6 +191,10 @@ const AddProjectPage = () => {
     var arr = arrTemp[indexItem]?.data?.splice(idx, 1)
     await setAllInfo([...arrTemp])
   }
+
+  const handleSave = () => {
+
+  }
   return (
     <>
       <div className="w-full h-screen overflow-y-auto">
@@ -216,7 +220,12 @@ const AddProjectPage = () => {
             <StudentBoard id={student.id} name={student.name} url={student.url} classname={student.class} gender={student.gender} />
           </div>
           <div className="w-3/4">
-            <span className=" font-semibold">Thêm đối tượng cho <span className="text-[#7D7D7D]">{student.id} - {student.name}</span></span>
+            <div className="w-full flex justify-between">
+              <span className=" font-semibold">Thêm đối tượng cho <span className="text-[#7D7D7D]">{student.id} - {student.name}</span></span>
+              <div className={`py-[3px] px-4 bg-[#3750AA] flex justify-center items-center rounded-full mr-2 ${allInfo?.length === 0 && "opacity-50 cursor-not-allowed"}`} onClick={handleSave}>
+                <span className="text-white">Lưu thay đổi</span>
+              </div>
+            </div>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
               {allInfo?.map((item, idx) => (
                 <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 text-gray-400 hover:text-black ${allInfo[indexItem]?.id === idx + 1 && "text-black"}`}>
