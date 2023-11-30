@@ -150,9 +150,9 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
     }
 
     const handleAddRecommendLabel = (item) => {
-        document.getElementById('name').value = item.name
-        document.getElementById('point').value = item.point
-        document.getElementById('ratio').value = item.ratio
+        document.getElementById('name_edit').value = item.name
+        document.getElementById('point_edit').value = item.point
+        document.getElementById('ratio_edit').value = item.ratio
     }
     return (
         <>
