@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Button, Modal } from "flowbite-react";
+import { Badge, Button, Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { Check, Star } from '@phosphor-icons/react'
 
@@ -21,6 +21,57 @@ const axiosApi = axios.create({
         'Content-type': 'application/json',
     },
 });
+
+const recommendLabel = [
+
+    {
+        id: '552210',
+        name: 'Poster Truyền thông',
+        point: 100,
+        ratio: '90%',
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    },
+    {
+        id: '552210',
+        name: 'Nhạc Pop',
+        point: 100,
+        ratio: '90%',
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    },
+    {
+        id: '552210',
+        name: 'Poster Truyền thông',
+        point: 100,
+        ratio: '90%',
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    },
+    {
+        id: '552210',
+        name: 'Video dạy Tiếng Anh',
+        point: 100,
+        ratio: '90%',
+        reviewPer: 'Nguyễn Văn A',
+        reviewId: 'D5PP6612',
+        reliability: 5,
+        result: 'Tốt',
+        data: []
+    }
+
+]
+
+const signLabel = ['warning', 'failure', 'purple', 'pink']
 
 const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
 
@@ -121,6 +172,12 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
         setShow(false)
     }
 
+    const handleAddRecommendLabel = (item) => {
+        document.getElementById('name').value = item.name
+        document.getElementById('point').value = item.point
+        document.getElementById('ratio').value = item.ratio
+    }
+
     return (
         <>
             <Modal size='5xl' show={show} onClose={() => setShow(false)}>
@@ -130,20 +187,28 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                 <Modal.Body>
                     <div className="w-full p-2 flex flex-wrap items-center">
                         <span className="pr-4">Tên đối tượng:</span>
-                        {/* <audio src={data ? data : ""} controls /> */}
                         <input type="text" id="name" class="bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder="Nhập tên đối tượng" required />
                         <span className="text-green-700 flex gap-2 ml-4">Tên đối tượng hợp lệ <Check size={20} color='green' /> </span>
+                    </div>
+                    <div className="w-full p-2 flex flex-wrap items-center">
+                        <span className="pr-4">Đề xuất label:</span>
+                        <div className="flex items-center gap-4 flex-wrap">
+                            {recommendLabel.map((item, idx) => (
+                                <>
+                                    <Badge color={signLabel[idx]} className="cursor-pointer" onClick={() => handleAddRecommendLabel(item)}>{item.name}</Badge>
+                                </>
+                            ))}
+
+                        </div>
                     </div>
                     <div className="w-full flex flex-wrap">
                         <div className="w-1/2 p-2 flex items-center">
                             <span className="pr-4">Điểm số:</span>
-                            {/* <audio src={data ? data : ""} controls /> */}
                             <input type="text" id="point" disabled={isCheck ? true : false} className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${isCheck && "opacity-50 cursor-no-drop"}`} placeholder="Nhập tên đối tượng" required />
                         </div>
 
                         <div className="w-1/2  p-2 flex items-center">
                             <span className="pr-4">Tỷ trọng:</span>
-                            {/* <audio src={data ? data : ""} controls /> */}
                             <input type="text" id="ratio" disabled={isCheck ? true : false} className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${isCheck && "opacity-50 cursor-no-drop"}`} placeholder="Nhập tên đối tượng" required />
                         </div>
                     </div>
@@ -157,7 +222,6 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                     <div className="w-full flex flex-wrap">
                         <div className="w-1/2 p-2 flex items-center">
                             <span className="pr-4">Người đánh giá:</span>
-                            {/* <audio src={data ? data : ""} controls /> */}
                             <input type="text" id="reviewPer" class="bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder="Nhập tên đối tượng" required />
                         </div>
 

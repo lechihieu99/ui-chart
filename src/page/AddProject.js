@@ -173,6 +173,7 @@ const AddProjectPage = () => {
 
     })
     await setAllInfo([...arrTemp])
+
   }
 
   const handleDelete = (item) => {
@@ -186,10 +187,10 @@ const AddProjectPage = () => {
     setIndexItem(idx)
   }
 
-  const handleDeleteImage = async (idx) => {
+  const handleDeleteImage = (idx) => {
     var arrTemp = allInfo;
     var arr = arrTemp[indexItem]?.data?.splice(idx, 1)
-    await setAllInfo([...arrTemp])
+    setAllInfo([...arrTemp])
   }
 
   const handleSave = () => {
@@ -228,7 +229,7 @@ const AddProjectPage = () => {
             </div>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
               {allInfo?.map((item, idx) => (
-                <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 text-gray-400 hover:text-black ${allInfo[indexItem]?.id === idx + 1 && "text-black"}`}>
+                <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black ${indexItem === idx ? "text-black" : "text-gray-400"}`}>
                   <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
                   <div>Điểm số: {item.point} điểm</div>
                   <div>Tỷ trọng: {item.ratio}</div>
