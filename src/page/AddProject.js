@@ -230,7 +230,7 @@ const AddProjectPage = () => {
                 <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black ${indexItem === idx ? "text-black" : "text-gray-400"}`}>
                   <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
                   <div>Điểm số: {item.point} điểm</div>
-                  <div>Tỷ trọng: {item.ratio}</div>
+                  <div>Tỷ trọng: {item.ratio} %</div>
                   <div className="flex items-center justify-center gap-2">
                     <Info size={20} color='black' className="cursor-pointer" onClick={() => showModalInfo(item)} />
                     <Pencil size={20} color='black' className="cursor-pointer" onClick={() => showModalEdit(item)} />
