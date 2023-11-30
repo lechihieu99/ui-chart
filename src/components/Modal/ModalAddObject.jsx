@@ -75,7 +75,7 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                 if (isExist === false) {
                     var arrTemp = allInfo ? allInfo : []
                     arrTemp.push({
-                        id: '1',
+                        id: allInfo?.length + 1,
                         name: name,
                         point: point,
                         ratio: ratio,
@@ -88,7 +88,7 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                         data: []
                     })
                     setAllInfo(arrTemp)
-                    setShow(false)
+
                 }
             }
             else {
@@ -101,7 +101,7 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                 if (isExist === false) {
                     var arrTemp = allInfo ? allInfo : []
                     arrTemp.push({
-                        id: '1',
+                        id: allInfo?.length + 1,
                         name: name,
                         point: '',
                         ratio: '',
@@ -114,10 +114,11 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                         data: []
                     })
                     setAllInfo(arrTemp)
-                    setShow(false)
                 }
             }
         }
+
+        setShow(false)
     }
 
     return (
