@@ -248,10 +248,13 @@ const AddProjectPage = () => {
 
               {/* Biểu đồ Chart*/}
               <span>Data dữ liệu của đối tượng:</span>
-              <div className="w-full bg-white py-16 pl-16 my-2 rounded-xl flex justify-start items-center">
-                <span>
-                  <Chart allInfo={allInfo} />
-                </span>
+              <div className={`w-full bg-white ${allInfo?.length > 0 ? "py-16 pl-16" : "opacity-50 py-4"} my-2 rounded-xl flex justify-start items-center`}>
+                {allInfo?.length > 0 && (
+                  <span>
+                    <Chart allInfo={allInfo} />
+                  </span>
+                )}
+
               </div>
               {/* Tài sản dữ liệu */}
               <span>Tài sản/dữ liệu của đối tượng: <span className="italic">{info?.name}</span></span>
