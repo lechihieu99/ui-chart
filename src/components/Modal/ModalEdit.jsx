@@ -16,6 +16,7 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
     const [isCheck, setIsCheck] = useState(false)
     const [review, setReview] = useState('Tốt')
     const [group, setGroup] = useState()
+    const [error, setError] = useState()
 
     const checkBoxChange = (e) => {
         setIsCheck(e.target.checked)
@@ -29,6 +30,33 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
         setGroup(e.label)
     }
 
+    const replaceObject = (objectId, updatedObject, data) => {
+        // Find the index of the object with the specified ID
+        const objectIndex = allInfo.findIndex(obj => obj.id === objectId);
+
+        // If the object is found, create a new array with the updated object
+        if (objectIndex !== -1) {
+            const newArray = [...allInfo];
+            newArray[objectIndex] = {
+                ...data,
+                name: updatedObject?.name,
+                point: updatedObject?.point,
+                ratio: updatedObject?.ratio,
+                message: updatedObject?.message,
+                reviewPer: updatedObject?.reviewPer,
+                reviewId: 'D5PP6612',
+                reliability: 5,
+                result: review,
+                group: group,
+            };
+
+            // Update the state with the new array
+            setAllInfo(newArray);
+        } else {
+            console.error(`Object with ID ${objectId} not found.`);
+        }
+    };
+
     const handleEdit = () => {
         const name = document.getElementById('name_edit')?.value
         const point = document.getElementById('point_edit')?.value
@@ -36,88 +64,39 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
         const message = document.getElementById('message_edit')?.value
         const reviewPer = document.getElementById('reviewPer_edit')?.value
 
-        if (name || reviewPer) {
-            if (!isCheck) {
-                var isExist = false
-                allInfo?.map((item, idx) => {
-                    if (name === item.name && idx !== indexItem)
-                        isExist = true;
-                })
+        if (name && reviewPer) {
+            // setAllInfo(prev => [
+            //     ...prev, {
+            //         id: allInfo?.length + 1,
+            //         name: name,
+            //         point: point,
+            //         ratio: ratio,
+            //         message: message,
+            //         reviewPer: reviewPer,
+            //         reviewId: 'D5PP6612',
+            //         reliability: 5,
+            //         result: review,
+            //         group: group,
+            //         data: []
+            //     }
+            // ])
 
-
-                if (isExist === false) {
-                    var arrTemp = allInfo ? allInfo : []
-                    setInfo({
-                        id: data?.id,
-                        name: name,
-                        point: point,
-                        ratio: ratio,
-                        message: '',
-                        reviewPer: reviewPer,
-                        reviewId: 'D5PP6612',
-                        reliability: 5,
-                        result: review,
-                        group: group,
-                        data: data?.data
-                    })
-                    arrTemp[indexItem] = {
-                        id: data?.id,
-                        name: name,
-                        point: point,
-                        ratio: ratio,
-                        message: '',
-                        reviewPer: reviewPer,
-                        reviewId: 'D5PP6612',
-                        reliability: 5,
-                        result: review,
-                        group: group,
-                        data: data?.data
-                    }
-                    setAllInfo(arrTemp)
-
-                }
+            const updatedObject = {
+                name: name,
+                point: point,
+                ratio: ratio,
+                message: message,
+                reviewPer: reviewPer,
             }
-            else {
-                var isExist = false
-                allInfo?.map((item) => {
-                    if (name === item.name)
-                        isExist = true;
-                })
-
-                if (isExist === false) {
-                    var arrTemp = allInfo ? allInfo : []
-                    setInfo({
-                        id: data?.id,
-                        name: name,
-                        point: '',
-                        ratio: '',
-                        message: message,
-                        reviewPer: reviewPer,
-                        reviewId: 'D5PP6612',
-                        reliability: 5,
-                        result: review,
-                        group: group,
-                        data: data?.data
-                    })
-                    arrTemp[indexItem] = {
-                        id: data?.id,
-                        name: name,
-                        point: '',
-                        ratio: '',
-                        message: message,
-                        reviewPer: reviewPer,
-                        reviewId: 'D5PP6612',
-                        reliability: 5,
-                        result: review,
-                        group: group,
-                        data: data?.data
-                    }
-                    setAllInfo(arrTemp)
-                }
-            }
+            replaceObject(data?.id, updatedObject, data)
+            setShow(false)
         }
-
-        setShow(false)
+        else {
+            setError('Vui lòng điền đầy đủ thông tin')
+            setTimeout(() => {
+                setError()
+            }, 3000)
+        }
     }
     return (
         <>
@@ -126,6 +105,9 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
                     Chỉnh sửa đối tượng
                 </Modal.Header>
                 <Modal.Body>
+                    {error && (
+                        <span className="italic text-red-400">{error}</span>
+                    )}
                     <div className="w-full p-2 flex flex-wrap items-center">
                         <span className="pr-4">Tên đối tượng:</span>
                         {/* <audio src={data ? data : ""} controls /> */}
