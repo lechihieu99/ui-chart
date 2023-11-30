@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-// Data: <Column key={diem.thi} coor={diem} chartData={chartData} updateCoors={updateColumn}/>
+// Data: <Column key={diem.name} coor={diem} chartData={chartData} updateCoors={updateColumn}/>
 function Column(props) {
   // STATES AND STYLES AND VARIABLES
   const style = {
@@ -153,7 +153,7 @@ function Column(props) {
       document.addEventListener("mousemove", onMouseMoveRightResize);
       document.addEventListener("mouseup", onMouseUpRightResize);
     };
-   
+
     // Left resize
     const onMouseMoveLeftResize = (event) => {
       const dx = event.clientX - x;
@@ -222,19 +222,18 @@ function Column(props) {
   return (
     <div
       ref={ref}
-      className={` bg-white border-[1px] border-black relative box ${
-        props.coor.isSelected && "box-selected"
-      }`}
+      className={` bg-white border-[1px] border-black relative box ${props.coor.isSelected && "box-selected"
+        }`}
       style={style}
     >
       <p className="absolute text-gray-950 w-full text-center top-[-2rem]">
         {(
           (props.coor.h / props.chartData.h) *
-          props.chartData.thangdiem
+          props.chartData.totalPoint
         ).toFixed(2)}
       </p>
-      <p className="absolute bottom-[-4rem] text-center w-full text-gray-950">
-        {props.coor.thi}
+      <p className="absolute -bottom-[4rem] text-center w-full truncate text-gray-950">
+        {props.coor.name}
         <br></br>
         {`${((props.coor.w / props.chartData.w) * 100).toFixed(2)}%`}
       </p>
