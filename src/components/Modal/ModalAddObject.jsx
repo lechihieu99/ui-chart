@@ -28,7 +28,7 @@ const recommendLabel = [
         id: '552210',
         name: 'Poster Truyền thông',
         point: 100,
-        ratio: '90%',
+        ratio: 90,
         reviewPer: 'Nguyễn Văn A',
         reviewId: 'D5PP6612',
         reliability: 5,
@@ -39,7 +39,7 @@ const recommendLabel = [
         id: '552210',
         name: 'Nhạc Pop',
         point: 100,
-        ratio: '90%',
+        ratio: 90,
         reviewPer: 'Nguyễn Văn A',
         reviewId: 'D5PP6612',
         reliability: 5,
@@ -50,7 +50,7 @@ const recommendLabel = [
         id: '552210',
         name: 'Poster Truyền thông',
         point: 100,
-        ratio: '90%',
+        ratio: 80,
         reviewPer: 'Nguyễn Văn A',
         reviewId: 'D5PP6612',
         reliability: 5,
@@ -61,7 +61,7 @@ const recommendLabel = [
         id: '552210',
         name: 'Video dạy Tiếng Anh',
         point: 100,
-        ratio: '90%',
+        ratio: 50,
         reviewPer: 'Nguyễn Văn A',
         reviewId: 'D5PP6612',
         reliability: 5,
@@ -78,6 +78,8 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
     const [isCheck, setIsCheck] = useState(false)
     const [review, setReview] = useState('Tốt')
     const [group, setGroup] = useState()
+
+    const [error, setError] = useState()
     // const [data, setData] = useState()
 
     // useEffect(() => {
@@ -114,62 +116,32 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
         const message = document.getElementById('message')?.value
         const reviewPer = document.getElementById('reviewPer')?.value
 
-        if (name || reviewPer) {
-            if (!isCheck) {
-                var isExist = false
-                allInfo?.map((item) => {
-                    if (name === item.name)
-                        isExist = true;
-                })
-
-
-                if (isExist === false) {
-                    var arrTemp = allInfo ? allInfo : []
-                    arrTemp.push({
-                        id: allInfo?.length + 1,
-                        name: name,
-                        point: point,
-                        ratio: ratio,
-                        message: '',
-                        reviewPer: reviewPer,
-                        reviewId: 'D5PP6612',
-                        reliability: 5,
-                        result: review,
-                        group: group,
-                        data: []
-                    })
-                    setAllInfo(arrTemp)
-
+        if (name && reviewPer) {
+            setAllInfo(prev => [
+                ...prev, {
+                    id: allInfo?.length + 1,
+                    name: name,
+                    point: point,
+                    ratio: ratio,
+                    message: message,
+                    reviewPer: reviewPer,
+                    reviewId: 'D5PP6612',
+                    reliability: 5,
+                    result: review,
+                    group: group,
+                    data: []
                 }
-            }
-            else {
-                var isExist = false
-                allInfo?.map((item) => {
-                    if (name === item.name)
-                        isExist = true;
-                })
-
-                if (isExist === false) {
-                    var arrTemp = allInfo ? allInfo : []
-                    arrTemp.push({
-                        id: allInfo?.length + 1,
-                        name: name,
-                        point: '',
-                        ratio: '',
-                        message: message,
-                        reviewPer: reviewPer,
-                        reviewId: 'D5PP6612',
-                        reliability: 5,
-                        result: review,
-                        group: group,
-                        data: []
-                    })
-                    setAllInfo(arrTemp)
-                }
-            }
+            ])
+            setShow(false)
+        }
+        else {
+            setError('Vui lòng điền đầy đủ thông tin')
+            setTimeout(() => {
+                setError()
+            }, 3000)
         }
 
-        setShow(false)
+
     }
 
     const handleAddRecommendLabel = (item) => {
@@ -185,6 +157,10 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                     Thêm đối tượng
                 </Modal.Header>
                 <Modal.Body>
+                    {error && (
+                        <span className="italic text-red-400">{error}</span>
+                    )}
+
                     <div className="w-full p-2 flex flex-wrap items-center">
                         <span className="pr-4">Tên đối tượng:</span>
                         <input type="text" id="name" class="bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder="Nhập tên đối tượng" required />

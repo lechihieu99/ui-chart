@@ -1,95 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Column from "./Column";
 
-function Chart(props) {
+function Chart({ allInfo }) {
   const [chartData, setChartData] = useState({
     id: 1,
-    mon: "Toan",
-    thangdiem: 10,
+    name: "Toan",
+    totalPoint: 10,
     w: 500,
     h: 500,
-    dsdiem: [
-      {
-        id: 1,
-        thi: "45p",
-        tytrong: 0.4,
-        x: 20,
-        y: 0,
-        w: 60,
-        h: 50,
-        isSelected: false,
-        z: 2,
-      },
-      {
-        id: 2,
-        thi: "Giua ki",
-        tytrong: 0.4,
-        x: 100,
-        y: 0,
-        w: 60,
-        h: 50,
-        isSelected: false,
-        z: 2,
-      },
-      {
-        id: 3,
-        thi: "Cuoi ki",
-        tytrong: 0.6,
-        x: 300,
-        y: 0,
-        w: 60,
-        h: 50,
-        isSelected: false,
-        z: 2,
-      },
-    ],
+    data: []
   });
   const [update, setUpdate] = useState(0);
 
+  useEffect(() => {
+    var xPosition = 0
+    setChartData(prev => (
+      {
+        ...prev,
+        data: allInfo?.map(item => {
+          xPosition = xPosition + 80
+          return (
+            {
+              ...item,
+              x: xPosition,
+              y: 0,
+              w: 60,
+              h: 50,
+              isSelected: false,
+              z: 2,
+            }
+          )
+        })
+      }
+    ))
+  }, [allInfo])
   const updateColumn = (id, values, syncValues) => {
     setChartData(
       (prev) => (
         {
           ...prev,
-          dsdiem: prev.dsdiem.map(diem => {
-            if (diem.id === id) return { ...diem, ...values };
-            if (syncValues) return { ...diem, ...syncValues };
-            return diem;
+          data: prev.data.map(item => {
+            if (item.id === id) return { ...item, ...values };
+            if (syncValues) return { ...item, ...syncValues };
+            return item;
           })
         }
       )
-
-      //   prev.map((typeBlock) => {
-      //     // Update values inside this type Blockblock
-      //     if (typeBlock.typeName === type) {
-      //       typeBlock.list = typeBlock.list.map((el) => {
-      //         if (el.id === id) return { ...el, ...values };
-      //         if (syncValues) return { ...el, ...syncValues };
-      //         return el;
-      //       });
-      //       return typeBlock;
-      //     }
-      //     if (syncValues) {
-      //       typeBlock.list = typeBlock.list?.map((el) => {
-      //         return { ...el, ...syncValues };
-      //       });
-      //       return typeBlock;
-      //     }
-      //     return typeBlock;
-      //   })
-      // prev.map((coor) => {
-      //   if (coor.id === id) return { ...coor, ...values };
-      //   if (syncValues) return { ...coor, ...syncValues };
-      //   return coor;
-      // })
     );
     setUpdate((prev) => prev + 1);
   };
 
 
-  const renderedElements = chartData.dsdiem.map(diem => (
+  const renderedElements = chartData.data.map(item => (
     <>
-      <Column key={diem.thi} coor={diem} chartData={chartData} updateCoors={updateColumn} />
+      <Column key={item.name} coor={item} chartData={chartData} updateCoors={updateColumn} />
     </>
   ));
 
@@ -116,7 +80,7 @@ function Chart(props) {
             <i className="fa-solid fa-arrow-right absolute top-1/2 left-full"></i>
           </div>
           <span className="absolute start-full top-0">
-            {chartData.thangdiem}
+            {chartData.totalPoint}
           </span>
         </div>
       </div>
@@ -145,17 +109,17 @@ function Chart(props) {
   //   return (
   //     <svg width={chartSize.w} height={chartSize.h} transform="scale(1, -1)" className="relative">
   //       <rect x="0" y="0" width="100%" height="100%" fill="#eee" />
-  //       <text className="absolute chart__text">{chartData.thangdiem}</text>
+  //       <text className="absolute chart__text">{chartData.totalPoint}</text>
   //       <line x1="0" y1="0" x2="0" y2={chartSize.h} stroke="#000"></line>
   //       <line x1="0" y1="0" x2={chartSize.w} y2="0" stroke="#000" />
-  //       {chartData.diem.map((column, index) => (
+  //       {chartData.item.map((column, index) => (
   //         <>
   //             <rect
-  //             key={column.thi}
+  //             key={column.name}
   //             x={(column.x / 100) * chartSize.w}
   //             y={0}
   //             width="50"
-  //             height={(column.diem / chartData.thangdiem) * chartSize.h}
+  //             height={(column.item / chartData.totalPoint) * chartSize.h}
   //             fill="steelblue"
   //             onMouseDown={(e) => handleDragStart(e, index)}
   //             onMouseMove={(e) => handleDrag(index, e.movementX, e.movementY)}
@@ -163,7 +127,7 @@ function Chart(props) {
   //             <text 
   //                 x={column.x / 100 * chartSize.w}
   //                 y="20"
-  //             >{column.thi}</text>
+  //             >{column.name}</text>
   //         </>
   //       ))}
   //     </svg>

@@ -128,13 +128,11 @@ const AddProjectPage = () => {
 
   useEffect(() => {
     setInfo(allInfo[indexItem])
-    console.log(allInfo)
   }, [allInfo, indexItem])
 
   useEffect(() => {
-    console.log(info)
-  }, [info])
-
+    console.log(allInfo)
+  }, [allInfo])
   useEffect(() => {
     setStudent(students.find(stu => stu.id === parseInt(id)));
   }, [])
@@ -252,7 +250,7 @@ const AddProjectPage = () => {
               <span>Data dữ liệu của đối tượng:</span>
               <div className="w-full bg-white py-16 pl-16 my-2 rounded-xl flex justify-start items-center">
                 <span>
-                  <Chart />
+                  <Chart allInfo={allInfo} />
                 </span>
               </div>
               {/* Tài sản dữ liệu */}
