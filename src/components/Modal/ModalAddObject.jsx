@@ -5,6 +5,8 @@ import { Check, Star } from '@phosphor-icons/react'
 
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import { studentsActions } from "../../store/features/studentsSlice";
+import { useSelector } from "react-redux";
 
 
 const options = [
@@ -80,6 +82,7 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
     const [group, setGroup] = useState()
 
     const [error, setError] = useState()
+
     // const [data, setData] = useState()
 
     // useEffect(() => {

@@ -6,9 +6,8 @@ import StudentBoard from '../components/StudentBoard';
 import ModalAddStudent from '../components/Modal/ModalAddStudent';
 
 
-function Dashboard() {
+function Dashboard({ info, setInfo, allInfo, setAllInfo, currentStudent, setCurrentStudent }) {
   const students = useSelector(state => state.students);
-  const [currentStudent, setCurrentStudent] = useState(0);
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   return (
@@ -42,7 +41,7 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((stu,idx) => (
+                {students.map((stu, idx) => (
                   <tr key={stu.id} onMouseOver={() => setCurrentStudent(idx)}>
                     <td>
                       <Link to={`/object-user/${stu.id}`} className='flex items-center'>
@@ -68,7 +67,7 @@ function Dashboard() {
       </div>
       {
         show &&
-        <ModalAddStudent show={true} setShow={setShow} students={students}/>
+        <ModalAddStudent show={true} setShow={setShow} students={students} info={info} setInfo={setInfo} allInfo={allInfo} setAllInfo={setAllInfo} />
       }
     </>
   );

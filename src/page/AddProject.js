@@ -15,6 +15,7 @@ import Column from "../components/Column";
 
 import JSONPretty from 'react-json-pretty';
 import { ToggleSwitch } from "flowbite-react";
+import { studentsActions } from "../store/features/studentsSlice";
 
 const students = [
   {
@@ -104,7 +105,7 @@ const students = [
 //   }
 // ]
 
-const AddProjectPage = () => {
+const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) => {
   const students = useSelector(state => state.students);
   const [student, setStudent] = useState({});
 
@@ -114,25 +115,26 @@ const AddProjectPage = () => {
   const [showEdit, setShowEdit] = useState(false)
 
   const [loadFile, setLoadFile] = useState(false)
-  const [passFile, setPassFile] = useState(false)
 
   const { id } = useParams();
   const navigate = useNavigate();
   const [show, setShow] = useState(false)
 
-  const [info, setInfo] = useState();
-  const [allInfo, setAllInfo] = useState([])
-
-  const [dataModel, setDataModel] = useState([])
   const [indexItem, setIndexItem] = useState()
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setInfo(allInfo[indexItem])
   }, [allInfo, indexItem])
 
   useEffect(() => {
-    console.log(allInfo)
+    dispatch(studentsActions.update({
+      ...students[currentStudent],
+      asset: allInfo
+    }))
   }, [allInfo])
+
   useEffect(() => {
     setStudent(students.find(stu => stu.id === parseInt(id)));
   }, [])
@@ -148,29 +150,35 @@ const AddProjectPage = () => {
   }
 
   const changeFile = async (e) => {
-    e.preventDefault()
     // console.log(e)
     // setLoadFile(true)
 
     const files = document.getElementById('file').files;
 
-    var arrTemp = allInfo;
+    const arr = []
 
     Object.keys(files).forEach(i => {
       const file = files[i];
       const reader = new FileReader();
       reader.onload = (e) => {
-        arrTemp[indexItem]?.data?.push({
+        console.log(file.name)
+        arr.push({
           item: file.name,
           data: e.target.result,
           type: file.type
         })
+
+        console.log(allInfo)
+        setAllInfo((prevArray) => [
+          ...prevArray.slice(0, indexItem), // Keep the elements before the specified index
+          { ...prevArray[indexItem], data: arr },
+          ...prevArray.slice(indexItem + 1), // Keep the elements after the specified outer index
+        ]);
         setLoadFile(e.target.result)
       }
       reader.readAsDataURL(file);
-
     })
-    await setAllInfo([...arrTemp])
+
 
   }
 
@@ -226,7 +234,7 @@ const AddProjectPage = () => {
               </div>
             </div>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
-              {allInfo?.map((item, idx) => (
+              {students[currentStudent]?.asset?.map((item, idx) => (
                 <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black ${indexItem === idx ? "text-black" : "text-gray-400"}`}>
                   <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
                   <div>Điểm số: {item.point} điểm</div>
@@ -317,7 +325,7 @@ const AddProjectPage = () => {
           </div>
         </div>
       </div>
-      <ModalAddObject show={show} setShow={setShow} setAllInfo={setAllInfo} allInfo={allInfo} />
+      <ModalAddObject show={show} setShow={setShow} setAllInfo={setAllInfo} allInfo={allInfo} currentStudent={currentStudent} />
       <ModalInformation data={info} show={showInfo} setShow={setShowInfo} />
       <ModalEdit data={info} show={showEdit} setShow={setShowEdit} setInfo={setInfo} setAllInfo={setAllInfo} allInfo={allInfo} indexItem={indexItem} />
     </>

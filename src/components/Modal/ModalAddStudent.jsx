@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Check, Minus, Plus, Star } from '@phosphor-icons/react'
+import { Check, Info, LinkSimpleHorizontal, Minus, Pencil, Plus, Star, X } from '@phosphor-icons/react'
 import { Modal } from "flowbite-react";
 import { useSelector, useDispatch } from "react-redux";
 import { studentsActions } from "../../store/features/studentsSlice";
@@ -8,10 +8,11 @@ import { studentsActions } from "../../store/features/studentsSlice";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import ModalAddObject from "./ModalAddObject";
+import ModalAddProperities from "./ModalAddPropertities";
 
 
 
-const ModalAddStudent = ({ show, setShow, students }) => {
+const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setAllInfo }) => {
     const [newStu, setNewStu] = useState({
         name: '', email: '', phone: '', pass: '', gender: 'Nam', class: "", img: ''
 
@@ -21,6 +22,14 @@ const ModalAddStudent = ({ show, setShow, students }) => {
     const [showModal, setShowModal] = useState(false)
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (show) {
+            setInfo()
+            setAllInfo([])
+        }
+    }, [])
+
     const handleChange = (event) => {
         setNewStu(prev => ({
             ...prev,
@@ -29,6 +38,7 @@ const ModalAddStudent = ({ show, setShow, students }) => {
     }
     const handleSubmit = (event) => {
         console.log(newStu);
+        console.log(allInfo)
         setShow(false);
         dispatch(studentsActions.add({
             id: students.length + 1,
@@ -37,7 +47,7 @@ const ModalAddStudent = ({ show, setShow, students }) => {
             email: newStu.email,
             class: newStu.class,
             gender: newStu.gender,
-
+            asset: allInfo
         }))
     }
 
@@ -91,45 +101,21 @@ const ModalAddStudent = ({ show, setShow, students }) => {
                             <input value={newStu.class} onChange={handleChange} name="class" type="text" id="first_name" class="w-2/5 bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder="IS207" required />
                             <span className="text-green-700 flex gap-2 ml-4">Tên lớp hợp lệ <Check size={20} color='green' /> </span>
                         </div>
-                        {showAddPro && (
-                            <>
-                                <div className="w-full flex p-2">
-                                    <div className="w-1/2 flex items-center gap-4">
-                                        <span>Tên thuộc tính: </span>
-                                        <input value="" name="properties" type="text" id="properties" class="w-2/5 bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder="properties" required />
-
-                                    </div>
-                                    <div className="w-1/2 flex items-center gap-4">
-                                        <span>Dữ liệu thuộc tính: </span>
-                                        <input value="" name="properties" type="text" id="properties" class="w-2/5 bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder="properties" required />
-
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                        <div className="w-full flex gap-4">
-                            {showAddPro ? (
-                                <div className="w-1/2 cursor-pointer bg-yellow-200 p-2 opacity-80 flex justify-center items-center rounded-full" onClick={() => setShowAddPro(false)}>
-
-                                    <Minus size={16} color="black" />
-                                </div>
-                            ) : (
-                                <div className="w-1/2 cursor-pointer bg-yellow-200 p-2 opacity-80 flex justify-center items-center rounded-full" onClick={() => setShowAddPro(true)}>
-
-                                    <Plus size={16} color="black" />
-                                </div>
-                            )}
-
-                            {showAddPro && (
-                                <div className="w-1/2 cursor-pointer bg-blue-200 p-2 opacity-80 flex justify-center items-center rounded-full" onClick={() => setShowAddPro(true)}>
-                                    <span>Thêm thuộc tính</span>
-                                </div>
-                            )}
-
-
-                        </div>
+                        <div className="cursor-pointer px-4 py-[3px] flex justify-center items-center" onClick={() => setShowAddPro(true)}>Thêm thuộc tính</div>
                         <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
-
+                        {allInfo?.map((item, idx) => (
+                            <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black text-black`}>
+                                <div className="cursor-pointer w-1/3">{item.id}. {item.name}</div>
+                                <div>Điểm số: {item.point} điểm</div>
+                                <div>Tỷ trọng: {item.ratio} %</div>
+                                <div className="flex items-center justify-center gap-2">
+                                    <Info size={20} color='black' className="cursor-pointer" />
+                                    <Pencil size={20} color='black' className="cursor-pointer" />
+                                    <LinkSimpleHorizontal size={20} color={`${item.data.length > 0 ? "black" : "gray"}`} />
+                                    <X size={20} color='black' className="cursor-pointer" />
+                                </div>
+                            </div>
+                        ))}
                         <div className="w-full mt-2 p-4 bg-[rgba(0,0,0,0.1)] rounded-xl" onClick={() => setShowModal(true)}>
                             <div className="w-full bg-[rgba(177,177,177,0.4)] flex justify-center items-center cursor-pointer rounded-full pt-[3px] pb-[3px]"
                             >
@@ -145,7 +131,8 @@ const ModalAddStudent = ({ show, setShow, students }) => {
                     </form>
                 </Modal.Body>
             </Modal>
-            <ModalAddObject show={showModal} setShow={setShowModal} />
+            <ModalAddObject show={showModal} setShow={setShowModal} allInfo={allInfo} setAllInfo={setAllInfo} info={info} setInfo={setInfo} />
+            <ModalAddProperities show={showAddPro} setShow={setShowAddPro} />
         </>
     )
 }
