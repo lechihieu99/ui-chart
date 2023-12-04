@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Column from "./Column";
+import { Droppable, Draggable } from "react-drag-and-drop";
 
 function Chart({ allInfo }) {
   const [chartData, setChartData] = useState({
@@ -12,28 +13,28 @@ function Chart({ allInfo }) {
   });
   const [update, setUpdate] = useState(0);
 
-  useEffect(() => {
-    var xPosition = 0
-    setChartData(prev => (
-      {
-        ...prev,
-        data: allInfo?.map(item => {
-          xPosition = xPosition + 80
-          return (
-            {
-              ...item,
-              x: xPosition,
-              y: 0,
-              w: 60,
-              h: 50,
-              isSelected: false,
-              z: 2,
-            }
-          )
-        })
-      }
-    ))
-  }, [allInfo])
+  // useEffect(() => {
+  //   var xPosition = 0
+  //   setChartData(prev => (
+  //     {
+  //       ...prev,
+  //       data: allInfo?.map(item => {
+  //         xPosition = xPosition + 80
+  //         return (
+  //           {
+  //             ...item,
+  //             x: xPosition,
+  //             y: 0,
+  //             w: 60,
+  //             h: 50,
+  //             isSelected: false,
+  //             z: 2,
+  //           }
+  //         )
+  //       })
+  //     }
+  //   ))
+  // }, [allInfo])
   const updateColumn = (id, values, syncValues) => {
     setChartData(
       (prev) => (
@@ -57,44 +58,75 @@ function Chart({ allInfo }) {
     </>
   ));
 
+  const onDrop = (value) => {
+    const dropId = parseInt(value.components); // id của elemnt được drop vào
+    var xPosition = 0
+    if (!chartData.data.find(col => col.id===dropId)){ // element chưa xuất hiện trong chart
+      setChartData(prev => (
+        {
+          ...prev,
+          data: [
+            ...prev.data,
+            {
+              ...allInfo.find(item => item.id===dropId),
+              x: xPosition,
+              y: 0,
+              w: 60,
+              h: 50,
+              isSelected: false,
+              z: 2,
+            }
+          ]
+        }
+      ))
+    }
+  }
+
 
   return (
-    <div className="bg-repeat whitespace" id="boxDrop">
-      <div className="coordinate">
-        {/* O number */}
-        <span className="position-absolute start-0 top-100 translate-middle">
-          O
-        </span>
-        {/* X line */}
-        {/* <div className="coordinate-x">
-            <div className="arrow position-absolute top-50">
-              <i className="fa-solid fa-arrow-right position-absolute top-50 start-100 translate-middle"></i>
-            </div>
-            <span className="position-absolute start-100 top-100 translate-middle">
-              {}
-            </span>
-          </div> */}
-        {/* Y line */}
-        <div className="coordinate-y coordinate-vertical">
-          <div className="arrow top-1/2">
-            <i className="fa-solid fa-arrow-right absolute top-1/2 left-full"></i>
-          </div>
-          <span className="absolute start-full top-0">
-            {chartData.totalPoint}
+    <Droppable
+        types={['components']} // <= allowed drop types
+        onDrop={onDrop}
+      >
+        <div className="bg-repeat whitespace" id="boxDrop">
+        <div className="coordinate">
+          {/* O number */}
+          <span className="position-absolute start-0 top-100 translate-middle">
+            O
           </span>
+          {/* X line */}
+          {/* <div className="coordinate-x">
+              <div className="arrow position-absolute top-50">
+                <i className="fa-solid fa-arrow-right position-absolute top-50 start-100 translate-middle"></i>
+              </div>
+              <span className="position-absolute start-100 top-100 translate-middle">
+                {}
+              </span>
+            </div> */}
+          {/* Y line */}
+          <div className="coordinate-y coordinate-vertical">
+            <div className="arrow top-1/2">
+              <i className="fa-solid fa-arrow-right absolute top-1/2 left-full"></i>
+            </div>
+            <span className="absolute start-full top-0">
+              {chartData.totalPoint}
+            </span>
+          </div>
+        </div>
+        <div
+          className=""
+          style={{
+            width: `${chartData.w}px`,
+            height: `${chartData.h}px`,
+            backgroundColor: "#F9F7F5",
+          }}
+        >
+          {renderedElements}
         </div>
       </div>
-      <div
-        className=""
-        style={{
-          width: `${chartData.w}px`,
-          height: `${chartData.h}px`,
-          backgroundColor: "#F9F7F5",
-        }}
-      >
-        {renderedElements}
-      </div>
-    </div>
+        {/* <div className='w-full bg-transparent' style={{ height: 'calc(100vh - 99.6px)' }}></div> */}
+    </Droppable>
+    
   );
 
 
