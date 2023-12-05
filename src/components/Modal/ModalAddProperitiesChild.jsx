@@ -8,22 +8,21 @@ const options = [
     { value: 'string', label: 'Dữ liệu chữ' },
 ];
 
-const ModalAddProperities = ({ show, setShow, properitiesList, setProperitiesList }) => {
+const ModalAddProperitiesChild = ({ show, setShow, properitiesChildList, setProperitiesChildList }) => {
 
     const [type, setType] = useState(options[0])
     const handleChangeType = (e) => {
         setType(e)
     }
     const handleAddProperities = () => {
-        const proName = document.getElementById('proName')?.value
-        const proType = document.getElementById('proType')?.value
+        const proName = document.getElementById('proChildName')?.value
+        const proType = document.getElementById('proChildType')?.value
 
-        const newArray = [...properitiesList, {
+        const newArray = [...properitiesChildList, {
             file: type?.value,
-            name: proName,
-            type: proType
+            name: proName
         }]
-        setProperitiesList(newArray)
+        setProperitiesChildList(newArray)
         setShow(false)
     }
     return (
@@ -33,28 +32,18 @@ const ModalAddProperities = ({ show, setShow, properitiesList, setProperitiesLis
                     Thêm thuộc tính
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="w-full flex flex-wrap">
-                        <div className="w-1/2 p-2 flex items-center">
-                            <span className="pr-4">Loại đầu vào:</span>
-                            <Dropdown options={options} value={options[0]} onChange={handleChangeType} placeholder="Tốt" />
-                        </div>
-                    </div>
 
                     <div className="w-full flex flex-wrap">
                         <div className="w-1/2 p-2 flex items-center">
                             <span className="pr-4">Tên thuộc tính:</span>
-                            <input type="text" id="proName" className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]`} placeholder="Nhập tên đối tượng" required />
+                            <input type="text" id="proChildName" className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]`} placeholder="Nhập tên đối tượng" required />
                         </div>
 
                         <div className="w-1/2  p-2 flex items-center">
                             <span className="pr-4">Viết tắt type của thuộc tính:</span>
-                            <input type="text" id="proType" className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập tên đối tượng" required />
+                            <input type="text" id="proChildType" className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập tên đối tượng" required />
                         </div>
-
-
                     </div>
-                    <span className="italic p-2">Nếu bạn muốn upload ảnh đại diện, vui lòng nhập Viết tắt type của thuộc tính là <span className="font-bold text-red-400">url</span></span>
-
 
                 </Modal.Body>
                 <Modal.Footer>
@@ -69,4 +58,4 @@ const ModalAddProperities = ({ show, setShow, properitiesList, setProperitiesLis
     )
 }
 
-export default ModalAddProperities;
+export default ModalAddProperitiesChild;

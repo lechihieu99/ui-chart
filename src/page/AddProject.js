@@ -9,6 +9,7 @@ import Image1 from '../asset/images/image.jpg';
 import PDF from '../asset/images/pdf_icon.svg'
 import ModalInformation from "../components/Modal/ModalInformation";
 import ModalEdit from "../components/Modal/ModalEdit";
+import { Draggable } from 'react-drag-and-drop';
 
 import Chart from "../components/Chart";
 import Column from "../components/Column";
@@ -125,15 +126,14 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    setInfo(allInfo[indexItem])
-  }, [allInfo, indexItem])
+    console.log(students[currentStudent].asset)
+    console.log(allInfo)
+  }, [allInfo, currentStudent])
 
   useEffect(() => {
-    dispatch(studentsActions.update({
-      ...students[currentStudent],
-      asset: allInfo
-    }))
-  }, [allInfo])
+    if (allInfo)
+      setInfo(allInfo[indexItem])
+  }, [allInfo, indexItem])
 
   useEffect(() => {
     setStudent(students.find(stu => stu.id === parseInt(id)));
@@ -174,6 +174,15 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
           { ...prevArray[indexItem], data: arr },
           ...prevArray.slice(indexItem + 1), // Keep the elements after the specified outer index
         ]);
+
+        dispatch(studentsActions.update({
+          ...students[currentStudent],
+          asset: [
+            ...allInfo.slice(0, indexItem), // Keep the elements before the specified index
+            { ...allInfo[indexItem], data: arr },
+            ...allInfo.slice(indexItem + 1), // Keep the elements after the specified outer index
+          ]
+        }))
         setLoadFile(e.target.result)
       }
       reader.readAsDataURL(file);
@@ -234,19 +243,23 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
               </div>
             </div>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
-              {students[currentStudent]?.asset?.map((item, idx) => (
-                <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black ${indexItem === idx ? "text-black" : "text-gray-400"}`}>
-                  <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
-                  <div>Điểm số: {item.point} điểm</div>
-                  <div>Tỷ trọng: {item.ratio} %</div>
-                  <div className="flex items-center justify-center gap-2">
-                    <Info size={20} color='black' className="cursor-pointer" onClick={() => showModalInfo(item)} />
-                    <Pencil size={20} color='black' className="cursor-pointer" onClick={() => showModalEdit(item)} />
-                    <LinkSimpleHorizontal size={20} color={`${item.data.length > 0 ? "black" : "gray"}`} />
-                    <X size={20} color='black' className="cursor-pointer" onClick={() => handleDelete(item)} />
+              {students[currentStudent].asset ? students[currentStudent]?.asset?.map((item, idx) => (
+                <Draggable type="components" data={item.id}>
+                  <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black ${indexItem === idx ? "text-black" : "text-gray-400"}`}>
+                    <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
+                    <div>Điểm số: {item.point} điểm</div>
+                    <div>Tỷ trọng: {item.ratio} %</div>
+                    <div className="flex items-center justify-center gap-2">
+                      <Info size={20} color='black' className="cursor-pointer" onClick={() => showModalInfo(item)} />
+                      <Pencil size={20} color='black' className="cursor-pointer" onClick={() => showModalEdit(item)} />
+                      <LinkSimpleHorizontal size={20} color={`${item.data.length > 0 ? "black" : "gray"}`} />
+                      <X size={20} color='black' className="cursor-pointer" onClick={() => handleDelete(item)} />
+                    </div>
                   </div>
-                </div>
-              ))}
+                </Draggable>
+              )) : (
+                <></>
+              )}
               <div className="w-full bg-[rgba(177,177,177,0.4)] flex justify-center items-center cursor-pointer rounded-full pt-[3px] pb-[3px]"
                 onClick={() => setShow(true)}
               >
@@ -255,8 +268,8 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
               <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
 
               {/* Biểu đồ Chart*/}
-              <span>Data dữ liệu của đối tượng:</span>
-              <div className={`w-full bg-white ${allInfo?.length > 0 ? "py-16 pl-16" : "opacity-50 py-4"} my-2 rounded-xl flex justify-start items-center`}>
+              <span>Data dữ liệu biểu đồ của đối tượng:</span>
+              <div className={`w-full overflow-hidden bg-white ${allInfo?.length > 0 ? "py-16 pl-16" : "opacity-50 py-4"} my-2 rounded-xl flex justify-start items-center`}>
                 {allInfo?.length > 0 && (
                   <span>
                     <Chart allInfo={allInfo} />
