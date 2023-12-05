@@ -23,17 +23,16 @@
     }
     tbody{
         tr:nth-child(odd){
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.681);
         }
         tr:nth-child(even){
-            background-color: rgb(199, 215, 224);
+            background-color: transparent;
         }
         tr{
             border-bottom: 1px solid #ececec;
-            padding: 1rem .2rem;
             &:hover{
                 color: white;
-                background-color: black;
+                background-color: rgba(0, 0, 0, 0.473);
                 > a {
                     color: white;
                 }

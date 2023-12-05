@@ -59,16 +59,17 @@ function Chart({ allInfo }) {
   ));
 
   const onDrop = (value) => {
+    console.log(value)
     const dropId = parseInt(value.components); // id của elemnt được drop vào
     var xPosition = 0
-    if (!chartData.data.find(col => col.id===dropId)){ // element chưa xuất hiện trong chart
+    if (!chartData.data.find(col => col.id === dropId)) { // element chưa xuất hiện trong chart
       setChartData(prev => (
         {
           ...prev,
           data: [
             ...prev.data,
             {
-              ...allInfo.find(item => item.id===dropId),
+              ...allInfo.find(item => item.id === dropId),
               x: xPosition,
               y: 0,
               w: 60,
@@ -85,10 +86,11 @@ function Chart({ allInfo }) {
 
   return (
     <Droppable
-        types={['components']} // <= allowed drop types
-        onDrop={onDrop}
-      >
-        <div className="bg-repeat whitespace" id="boxDrop">
+      types={['components']} // <= allowed drop types
+      onDrop={onDrop}
+
+    >
+      <div className="bg-repeat whitespace" id="boxDrop">
         <div className="coordinate">
           {/* O number */}
           <span className="position-absolute start-0 top-100 translate-middle">
@@ -124,9 +126,9 @@ function Chart({ allInfo }) {
           {renderedElements}
         </div>
       </div>
-        {/* <div className='w-full bg-transparent' style={{ height: 'calc(100vh - 99.6px)' }}></div> */}
+      {/* <div className='w-full bg-transparent' style={{ height: 'calc(100vh - 99.6px)' }}></div> */}
     </Droppable>
-    
+
   );
 
 

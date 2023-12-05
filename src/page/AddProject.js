@@ -16,6 +16,7 @@ import Column from "../components/Column";
 
 import JSONPretty from 'react-json-pretty';
 import { ToggleSwitch } from "flowbite-react";
+import { studentsActions } from "../store/features/studentsSlice";
 
 const students = [
   {
@@ -105,7 +106,7 @@ const students = [
 //   }
 // ]
 
-const AddProjectPage = () => {
+const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) => {
   const students = useSelector(state => state.students);
   const [student, setStudent] = useState({});
 
@@ -115,25 +116,25 @@ const AddProjectPage = () => {
   const [showEdit, setShowEdit] = useState(false)
 
   const [loadFile, setLoadFile] = useState(false)
-  const [passFile, setPassFile] = useState(false)
 
   const { id } = useParams();
   const navigate = useNavigate();
   const [show, setShow] = useState(false)
 
-  const [info, setInfo] = useState();
-  const [allInfo, setAllInfo] = useState([])
-
-  const [dataModel, setDataModel] = useState([])
   const [indexItem, setIndexItem] = useState()
 
-  useEffect(() => {
-    setInfo(allInfo[indexItem])
-  }, [allInfo, indexItem])
+  const dispatch = useDispatch()
 
   useEffect(() => {
+    console.log(students[currentStudent].asset)
     console.log(allInfo)
-  }, [allInfo])
+  }, [allInfo, currentStudent])
+
+  useEffect(() => {
+    if (allInfo)
+      setInfo(allInfo[indexItem])
+  }, [allInfo, indexItem])
+
   useEffect(() => {
     setStudent(students.find(stu => stu.id === parseInt(id)));
   }, [])
@@ -149,29 +150,44 @@ const AddProjectPage = () => {
   }
 
   const changeFile = async (e) => {
-    e.preventDefault()
     // console.log(e)
     // setLoadFile(true)
 
     const files = document.getElementById('file').files;
 
-    var arrTemp = allInfo;
+    const arr = []
 
     Object.keys(files).forEach(i => {
       const file = files[i];
       const reader = new FileReader();
       reader.onload = (e) => {
-        arrTemp[indexItem]?.data?.push({
+        console.log(file.name)
+        arr.push({
           item: file.name,
           data: e.target.result,
           type: file.type
         })
+
+        console.log(allInfo)
+        setAllInfo((prevArray) => [
+          ...prevArray.slice(0, indexItem), // Keep the elements before the specified index
+          { ...prevArray[indexItem], data: arr },
+          ...prevArray.slice(indexItem + 1), // Keep the elements after the specified outer index
+        ]);
+
+        dispatch(studentsActions.update({
+          ...students[currentStudent],
+          asset: [
+            ...allInfo.slice(0, indexItem), // Keep the elements before the specified index
+            { ...allInfo[indexItem], data: arr },
+            ...allInfo.slice(indexItem + 1), // Keep the elements after the specified outer index
+          ]
+        }))
         setLoadFile(e.target.result)
       }
       reader.readAsDataURL(file);
-
     })
-    await setAllInfo([...arrTemp])
+
 
   }
 
@@ -227,7 +243,7 @@ const AddProjectPage = () => {
               </div>
             </div>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
-              {allInfo?.map((item, idx) => (
+              {students[currentStudent].asset ? students[currentStudent]?.asset?.map((item, idx) => (
                 <Draggable type="components" data={item.id}>
                   <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black ${indexItem === idx ? "text-black" : "text-gray-400"}`}>
                     <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
@@ -241,7 +257,9 @@ const AddProjectPage = () => {
                     </div>
                   </div>
                 </Draggable>
-              ))}
+              )) : (
+                <></>
+              )}
               <div className="w-full bg-[rgba(177,177,177,0.4)] flex justify-center items-center cursor-pointer rounded-full pt-[3px] pb-[3px]"
                 onClick={() => setShow(true)}
               >
@@ -250,8 +268,8 @@ const AddProjectPage = () => {
               <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
 
               {/* Biểu đồ Chart*/}
-              <span>Data dữ liệu của đối tượng:</span>
-              <div className={`w-full bg-white ${allInfo?.length > 0 ? "py-16 pl-16" : "opacity-50 py-4"} my-2 rounded-xl flex justify-start items-center`}>
+              <span>Data dữ liệu biểu đồ của đối tượng:</span>
+              <div className={`w-full overflow-hidden bg-white ${allInfo?.length > 0 ? "py-16 pl-16" : "opacity-50 py-4"} my-2 rounded-xl flex justify-start items-center`}>
                 {allInfo?.length > 0 && (
                   <span>
                     <Chart allInfo={allInfo} />
@@ -320,7 +338,7 @@ const AddProjectPage = () => {
           </div>
         </div>
       </div>
-      <ModalAddObject show={show} setShow={setShow} setAllInfo={setAllInfo} allInfo={allInfo} />
+      <ModalAddObject show={show} setShow={setShow} setAllInfo={setAllInfo} allInfo={allInfo} currentStudent={currentStudent} />
       <ModalInformation data={info} show={showInfo} setShow={setShowInfo} />
       <ModalEdit data={info} show={showEdit} setShow={setShowEdit} setInfo={setInfo} setAllInfo={setAllInfo} allInfo={allInfo} indexItem={indexItem} />
     </>

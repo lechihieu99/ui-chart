@@ -1,10 +1,13 @@
 import axios from "axios";
 import { Badge, Button, Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
-import { Check, Star } from '@phosphor-icons/react'
+import { Check, Minus, Plus, Star, XCircle } from '@phosphor-icons/react'
 
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import { studentsActions } from "../../store/features/studentsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import ModalAddProperitiesChild from "./ModalAddProperitiesChild";
 
 
 const options = [
@@ -73,13 +76,23 @@ const recommendLabel = [
 
 const signLabel = ['warning', 'failure', 'purple', 'pink']
 
-const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
+const ModalAddObject = ({ show, setShow, setAllInfo, allInfo, currentStudent }) => {
 
+    const students = useSelector(state => state.students)
     const [isCheck, setIsCheck] = useState(false)
     const [review, setReview] = useState('Tốt')
     const [group, setGroup] = useState()
 
     const [error, setError] = useState()
+
+    const [myArray, setMyArray] = useState([])
+
+    const [showAddProChild, setShowAddProChild] = useState(false)
+
+    const [properitiesChildList, setProperitiesChildList] = useState([])
+
+    const dispatch = useDispatch()
+
     // const [data, setData] = useState()
 
     // useEffect(() => {
@@ -132,6 +145,24 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                     data: []
                 }
             ])
+            dispatch(studentsActions.update({
+                ...students[currentStudent],
+                asset: [
+                    ...allInfo, {
+                        id: allInfo?.length + 1,
+                        name: name,
+                        point: point,
+                        ratio: ratio,
+                        message: message,
+                        reviewPer: reviewPer,
+                        reviewId: 'D5PP6612',
+                        reliability: 5,
+                        result: review,
+                        group: group,
+                        data: []
+                    }
+                ]
+            }))
             setShow(false)
         }
         else {
@@ -148,6 +179,23 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
         document.getElementById('name').value = item.name
         document.getElementById('point').value = item.point
         document.getElementById('ratio').value = item.ratio
+    }
+
+    const handleAddChildren = () => {
+        setMyArray([...myArray, {
+            name: 'firstChild',
+            desName: 'Nhập tên thành phần con',
+            point: 'firstPoint',
+            desPoint: 'Nhập điểm thành phần con',
+            ratio: 'firstRatio',
+            desRatio: 'Nhập tỷ trọng thành phần con'
+        }])
+    }
+
+    const handleSelectedPro = (idx) => {
+        let arr = [...properitiesChildList];
+        let arrTemp = [...arr.splice(idx, 1)]
+        setProperitiesChildList([...arr])
     }
 
     return (
@@ -179,20 +227,37 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                     </div>
                     <div className="w-full flex flex-wrap">
                         <div className="w-1/2 p-2 flex items-center">
-                            <span className="pr-4">Điểm số:</span>
+                            <span className="pr-4">Điểm số tổng:</span>
                             <input type="text" id="point" disabled={isCheck ? true : false} className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${isCheck && "opacity-50 cursor-no-drop"}`} placeholder="Nhập tên đối tượng" required />
                         </div>
 
                         <div className="w-1/2  p-2 flex items-center">
-                            <span className="pr-4">Tỷ trọng:</span>
+                            <span className="pr-4">Tỷ trọng tổng:</span>
                             <input type="text" id="ratio" disabled={isCheck ? true : false} className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${isCheck && "opacity-50 cursor-no-drop"}`} placeholder="Nhập tên đối tượng" required />
                         </div>
                     </div>
-                    <div className="w-full h-8 p-2 flex items-center gap-4">
-                        <div className="w-1/3 h-full bg-blue-200"></div>
-                        <div className="w-1/3 h-full bg-red-200"></div>
-                        <div className="w-1/3 h-full bg-yellow-200"></div>
+                    {myArray?.map((item, idx) => (
+                        <div className="w-full p-2 flex items-center gap-4">
+                            <div className="w-1/3 h-full">
+                                <input type="text" id={item.name} class="w-full bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder={item.desName + " " + (idx + 1)} required />
+
+                            </div>
+                            <div className="w-1/3 h-full">
+                                <input type="text" id={item.point} class="w-full bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder={item.desPoint + " " + (idx + 1)} required />
+
+                            </div>
+                            <div className="w-1/3 h-full flex items-center">
+                                <input type="text" id={item.ratio} class="w-full bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder={item.desRatio + " " + (idx + 1)} required />
+                                <Minus color="red" size={24} className="mx-4 cursor-pointer" />
+                            </div>
+                        </div>
+                    ))}
+                    <div className="w-full p-2">
+                        <div className="w-full py-[3px] flex justify-center items-center bg-blue-200 rounded-full cursor-pointer" onClick={handleAddChildren}>
+                            <Plus size={16} color='black' />
+                        </div>
                     </div>
+
                     <div className="w-full flex justify-start items-center gap-2 p-2">
                         <span className="font-semibold">Bạn có muốn thêm đối tượng theo dạng text?</span>
                         <input id="remember" type="checkbox" value="" onChange={checkBoxChange} class="w-4 h-4 border-[1px] border-black bg-gray-50" required />
@@ -228,6 +293,23 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                         <Dropdown options={options2} value={options2[0]} onChange={handleChangeGroup} placeholder="Chọn nhóm đối tượng..." />
                     </div>
 
+                    <div className="w-full p-2 flex flex-wrap items-center">
+
+                        {properitiesChildList?.map((item, idx) => (
+                            <div className="w-1/2 pb-4 flex items-center">
+                                <span className="pr-4 w-[30%] truncate">{item.name}:</span>
+
+                                <input type="text" id="proType" className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập tên đối tượng" required />
+
+                                <XCircle color="black" size={20} className="mx-4" onClick={() => handleSelectedPro(idx)} />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="cursor-pointer px-4 py-[3px] flex justify-center items-center" onClick={() => setShowAddProChild(true)}>Thêm thuộc tính</div>
+                    <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
+
+
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="w-full flex justify-end items-center cursor-pointer">
@@ -237,6 +319,7 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo }) => {
                     </div>
                 </Modal.Footer>
             </Modal>
+            <ModalAddProperitiesChild show={showAddProChild} setShow={setShowAddProChild} properitiesChildList={properitiesChildList} setProperitiesChildList={setProperitiesChildList} />
         </>
     )
 }
