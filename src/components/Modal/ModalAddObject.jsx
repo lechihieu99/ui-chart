@@ -192,6 +192,12 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo, currentStudent }) 
         }])
     }
 
+    const handleDeleteChildren = (idx) => {
+        let arr = [...myArray];
+        let arrTemp = [...arr.splice(idx, 1)]
+        setMyArray([...arr])
+    }
+
     const handleSelectedPro = (idx) => {
         let arr = [...properitiesChildList];
         let arrTemp = [...arr.splice(idx, 1)]
@@ -200,7 +206,7 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo, currentStudent }) 
 
     return (
         <>
-            <Modal size='5xl' show={show} onClose={() => setShow(false)}>
+            <Modal size='7xl' show={show} onClose={() => setShow(false)}>
                 <Modal.Header>
                     Thêm đối tượng
                 </Modal.Header>
@@ -248,7 +254,7 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo, currentStudent }) 
                             </div>
                             <div className="w-1/3 h-full flex items-center">
                                 <input type="text" id={item.ratio} class="w-full bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-1/2 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)]" placeholder={item.desRatio + " " + (idx + 1)} required />
-                                <Minus color="red" size={24} className="mx-4 cursor-pointer" />
+                                <Minus color="red" size={24} className="mx-4 cursor-pointer" onClick={() => handleDeleteChildren(idx)} />
                             </div>
                         </div>
                     ))}
@@ -258,13 +264,6 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo, currentStudent }) 
                         </div>
                     </div>
 
-                    <div className="w-full flex justify-start items-center gap-2 p-2">
-                        <span className="font-semibold">Bạn có muốn thêm đối tượng theo dạng text?</span>
-                        <input id="remember" type="checkbox" value="" onChange={checkBoxChange} class="w-4 h-4 border-[1px] border-black bg-gray-50" required />
-                    </div>
-                    <div className={`w-full h-0 overflow-hidden ${isCheck && "h-fit"}`}>
-                        <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border-[1px] border-[rgba(0,0,0,0.5)]" style={{ resize: 'none' }} placeholder="Mô tả đối tượng..."></textarea>
-                    </div>
                     <div className="w-full flex flex-wrap">
                         <div className="w-1/2 p-2 flex items-center">
                             <span className="pr-4">Người đánh giá:</span>
@@ -288,9 +287,12 @@ const ModalAddObject = ({ show, setShow, setAllInfo, allInfo, currentStudent }) 
                         <Dropdown options={options} value={options[0]} onChange={handleChangeReview} placeholder="Tốt" />
                     </div>
 
-                    <div className="w-1/2 p-2 flex items-center">
-                        <span className="pr-4">Nhóm đối tượng:</span>
-                        <Dropdown options={options2} value={options2[0]} onChange={handleChangeGroup} placeholder="Chọn nhóm đối tượng..." />
+                    <div className="w-full flex justify-start items-center gap-2 p-2">
+                        <span className="font-semibold">Bạn có muốn thêm đối tượng theo dạng text?</span>
+                        <input id="remember" type="checkbox" value="" onChange={checkBoxChange} class="w-4 h-4 border-[1px] border-black bg-gray-50" required />
+                    </div>
+                    <div className={`w-full h-0 overflow-hidden ${isCheck && "h-fit"}`}>
+                        <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border-[1px] border-[rgba(0,0,0,0.5)]" style={{ resize: 'none' }} placeholder="Mô tả đối tượng..."></textarea>
                     </div>
 
                     <div className="w-full p-2 flex flex-wrap items-center">
