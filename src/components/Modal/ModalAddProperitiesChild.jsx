@@ -25,6 +25,8 @@ const ModalAddProperitiesChild = ({ show, setShow, properitiesChildList, setProp
         setProperitiesChildList(newArray)
         setShow(false)
     }
+
+
     return (
         <>
             <Modal size='5xl' show={show} onClose={() => setShow(false)}>

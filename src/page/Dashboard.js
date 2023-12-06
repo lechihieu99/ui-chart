@@ -55,7 +55,7 @@ function Dashboard({ info, setInfo, allInfo, setAllInfo, currentStudent, setCurr
               </div>
               {/* Buttons */}
               <div className='flex justify-end'>
-                <button className='btn-shadow-style bg-white border border-1 border-black px-2 py-1 ms-3 text-bold rounded-lg' onClick={() => setShow(true)}>Add</button>
+                <button className='btn-shadow-style bg-white border border-1 border-black px-2 py-1 ms-3 text-bold rounded-lg' onClick={() => setShow(true)}>Thêm đối tượng</button>
                 <button className='btn-shadow-style bg-white border border-1 border-black px-2 py-1 ms-3 text-bold rounded-lg'>Export CV</button>
               </div>
             </div>
