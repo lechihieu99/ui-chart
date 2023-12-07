@@ -98,7 +98,7 @@ function Dashboard({ info, setInfo, allInfo, setAllInfo, currentStudent, setCurr
       </div>
       {
         show &&
-        <ModalAddStudent show={true} setShow={setShow} students={students} info={info} setInfo={setInfo} allInfo={allInfo} setAllInfo={setAllInfo} />
+        <ModalAddStudent type='parent' show={true} setShow={setShow} students={students} info={info} setInfo={setInfo} allInfo={allInfo} setAllInfo={setAllInfo} currentStudent={currentStudent} />
       }
     </>
   );

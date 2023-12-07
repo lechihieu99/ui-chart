@@ -17,6 +17,7 @@ import Column from "../components/Column";
 import JSONPretty from 'react-json-pretty';
 import { ToggleSwitch } from "flowbite-react";
 import { studentsActions } from "../store/features/studentsSlice";
+import ModalAddStudent from "../components/Modal/ModalAddStudent";
 
 const students = [
   {
@@ -338,7 +339,7 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
           </div>
         </div>
       </div>
-      <ModalAddObject show={show} setShow={setShow} setAllInfo={setAllInfo} allInfo={allInfo} currentStudent={currentStudent} />
+      <ModalAddStudent type='child' show={show} setShow={setShow} setAllInfo={setAllInfo} allInfo={allInfo} info={info} setInfo={setInfo} currentStudent={currentStudent} />
       <ModalInformation data={info} show={showInfo} setShow={setShowInfo} />
       <ModalEdit data={info} show={showEdit} setShow={setShowEdit} setInfo={setInfo} setAllInfo={setAllInfo} allInfo={allInfo} indexItem={indexItem} />
     </>
