@@ -17,6 +17,7 @@ import Dashboard from './page/Dashboard';
 import AddProjectPage from './page/AddProject';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import RankingPage from './page/RankingPage';
 
 
 
@@ -36,6 +37,8 @@ function App() {
       <Route element={<Layout />}>
         <Route path='/' element={<Dashboard allInfo={allInfo} setAllInfo={setAllInfo} info={info} setInfo={setInfo} currentStudent={currentStudent} setCurrentStudent={setCurrentStudent} />} />
         <Route path='/object-user/:id' element={<AddProjectPage allInfo={allInfo} setAllInfo={setAllInfo} info={info} setInfo={setInfo} currentStudent={currentStudent} />} />
+        <Route path='/rank' element={<RankingPage />} />
+
       </Route>
     )
   )

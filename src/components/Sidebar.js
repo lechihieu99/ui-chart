@@ -20,29 +20,12 @@ function Sidebar() {
           Dashboard
         </Link>
         <Link
-          to="/"
+          to="/rank"
           className="px-2 text-white font-semibold no-underline w-full py-4 text-sm rounded-xl hover:bg-[#c1c1c1] hover:text-black"
         >
-          Teachers
+          Ranking
         </Link>
-        <Link
-          to="/"
-          className="px-2 text-white font-semibold no-underline w-full py-4 text-sm rounded-xl hover:bg-[#c1c1c1] hover:text-black"
-        >
-          Students
-        </Link>
-        <Link
-          to="/"
-          className="px-2 text-white font-semibold no-underline w-full py-4 text-sm rounded-xl hover:bg-[#c1c1c1] hover:text-black"
-        >
-          Billing
-        </Link>
-        <Link
-          to="/"
-          className="px-2 text-white font-semibold no-underline w-full py-4 text-sm rounded-xl hover:bg-[#c1c1c1] hover:text-black"
-        >
-          Exams
-        </Link>
+
       </ul>
     </div>
   );

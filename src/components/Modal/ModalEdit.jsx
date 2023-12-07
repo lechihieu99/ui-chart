@@ -156,7 +156,7 @@ const ModalEdit = ({ data, show, setShow, setInfo, setAllInfo, allInfo, indexIte
     }
     return (
         <>
-            <Modal size='5xl' show={show} onClose={() => setShow(false)}>
+            <Modal size='7xl' show={show} onClose={() => setShow(false)}>
                 <Modal.Header>
                     Chỉnh sửa đối tượng
                 </Modal.Header>

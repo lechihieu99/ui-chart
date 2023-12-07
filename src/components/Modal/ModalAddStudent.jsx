@@ -10,6 +10,8 @@ import 'react-dropdown/style.css';
 import ModalAddObject from "./ModalAddObject";
 import ModalAddProperities from "./ModalAddPropertities";
 import DefaultInfo from "../defaultInfo/DefaultInfo";
+import JSONPretty from 'react-json-pretty';
+import Chart from "../Chart";
 
 const options = [
     { value: 'student', label: 'Học sinh' },
@@ -69,12 +71,12 @@ const recommendLabel = [
 
 const signLabel = ['warning', 'failure', 'purple', 'pink']
 
-const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setAllInfo }) => {
+const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllInfo, currentStudent }) => {
     const [newStu, setNewStu] = useState({
         name: '', email: '', phone: '', pass: '', gender: 'Nam', class: "", img: ''
     })
 
-    const [typeObjectModal, setTypeObjectModal] = useState(options[0])
+    const students = useSelector(state => state.students);
 
     const [showAddPro, setShowAddPro] = useState(false)
     const [showModal, setShowModal] = useState(false)
@@ -83,18 +85,23 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
         id: 0
     }])
 
-    const keysArray = Object.keys(typeObjectModal);
-
     const [count, setCount] = useState(1)
+    const [finalArr, setFinalArr] = useState([])
+    const [indexItem, setIndexItem] = useState()
+    const [loadFile, setLoadFile] = useState(false)
+    const [isSwitch, setIsSwitch] = useState(false)
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (show) {
-            setInfo()
-            setAllInfo([])
-        }
-    }, [])
+        if (allInfo)
+            setInfo(allInfo[indexItem])
+    }, [allInfo, indexItem])
+
+    useEffect(() => {
+        if (show)
+            setFinalArr([])
+    }, [show])
 
     const handleChange = (event) => {
         setNewStu(prev => ({
@@ -104,66 +111,38 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
     }
     const handleSubmit = (event) => {
         setShow(false);
-        if (typeObjectModal?.value === 'student') {
-            const name = document.getElementById(`${keysArray[1] + typeObjectModal?.value}`)?.value
-            const id = document.getElementById(`${keysArray[2] + typeObjectModal?.value}`)?.value
-            const sex = 'Nam'
-            const email = document.getElementById(`${keysArray[4] + typeObjectModal?.value}`)?.value
-            const classObj = document.getElementById(`${keysArray[5] + typeObjectModal?.value}`)?.value
-            const teacher = document.getElementById(`${keysArray[6] + typeObjectModal?.value}`)?.value
 
-            dispatch(studentsActions.add({
-                id: students.length + 1,
-                idObj: id,
-                name: name,
-                sex: sex,
-                email: email,
-                class: classObj,
-                teacher: teacher,
-                type: typeObjectModal?.value?.toUpperCase(),
-                asset: allInfo
-            }))
-        }
-
-        if (typeObjectModal?.value === 'teacher') {
-            const name = document.getElementById(`${keysArray[1] + typeObjectModal?.value}`)?.value
-            const id = document.getElementById(`${keysArray[2] + typeObjectModal?.value}`)?.value
-            const sex = 'Nam'
-            const email = document.getElementById(`${keysArray[4] + typeObjectModal?.value}`)?.value
-            const classObj = document.getElementById(`${keysArray[5] + typeObjectModal?.value}`)?.value
-            const number = document.getElementById(`${keysArray[6] + typeObjectModal?.value}`)?.value
-
-            dispatch(studentsActions.add({
-                id: students.length + 1,
-                idObj: id,
-                name: name,
-                sex: sex,
-                email: email,
-                class: classObj,
-                number: number,
-                type: typeObjectModal?.value?.toUpperCase(),
-                asset: allInfo
-            }))
-        }
-
-        if (typeObjectModal?.value === 'company') {
-            const name = document.getElementById(`${keysArray[1] + typeObjectModal?.value}`)?.value
-            const id = document.getElementById(`${keysArray[2] + typeObjectModal?.value}`)?.value
-            const tax = document.getElementById(`${keysArray[3] + typeObjectModal?.value}`)?.value
-            const total = document.getElementById(`${keysArray[4] + typeObjectModal?.value}`)?.value
-            const phone = document.getElementById(`${keysArray[5] + typeObjectModal?.value}`)?.value
-
-            dispatch(studentsActions.add({
-                id: students.length + 1,
-                idObj: id,
-                name: name,
-                tax: tax,
-                total: total,
-                phone: phone,
-                type: typeObjectModal?.value?.toUpperCase(),
-                asset: allInfo
-            }))
-        }
+        finalArr?.map((item, idx) => {
+            if (type === 'parent')
+                dispatch(studentsActions.add({
+                    id: students.length + 1,
+                    asset: [],
+                    ...finalArr[idx]
+                }))
+            else if (type === 'child') {
+                setAllInfo(prev => [
+                    ...prev, {
+                        id: allInfo?.length + 1,
+                        name: item.name,
+                        point: item.point,
+                        ratio: item.ratio,
+                        data: []
+                    }
+                ])
+                dispatch(studentsActions.update({
+                    ...students[currentStudent],
+                    asset: [
+                        ...allInfo, {
+                            id: allInfo?.length + 1,
+                            name: item.name,
+                            point: item.point,
+                            ratio: item.ratio,
+                            data: []
+                        }
+                    ]
+                }))
+            }
+        })
     }
 
     const handleSelectedPro = (idx) => {
@@ -186,9 +165,101 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
         setProperitiesList([...arr])
     }
 
+    const handleShowInfo = () => {
+        const nameList = document.getElementsByClassName('nameTest')
+        const pointList = document.getElementsByClassName('pointTest')
+        const ratioList = document.getElementsByClassName('ratioTest')
+
+        var arr = []
+        for (let i in nameList) {
+            if (nameList[i]?.value && pointList[i]?.value && ratioList[i]?.value) {
+
+                arr.push({
+                    id: arr?.length + 1,
+                    name: nameList[i]?.value,
+                    point: pointList[i]?.value,
+                    ratio: ratioList[i]?.value,
+                    data: allInfo[indexItem]?.data ? allInfo[indexItem]?.data : []
+                })
+            }
+
+        }
+
+        setFinalArr(arr)
+
+    }
+
+    const handlePostLabel = (name, idx) => {
+        const nameList = document.getElementsByClassName('nameTest')
+        nameList[idx].value = name
+    }
+
+    const handlePostLabel2 = (name, idx) => {
+        const nameList = document.getElementsByClassName('nameText')
+        nameList[idx].value = name
+    }
+
+    const handleSaveInfo = () => {
+        setAllInfo(finalArr)
+    }
+
+    const handleSelectItem = (item, idx) => {
+        setIndexItem(idx)
+    }
+
+    const handleDeleteImage = (idx) => {
+        var arrTemp = allInfo;
+        var arr = arrTemp[indexItem]?.data?.splice(idx, 1)
+        setAllInfo([...arrTemp])
+    }
+
+    const changeFile = async (e) => {
+        // console.log(e)
+        // setLoadFile(true)
+
+        const files = document.getElementById('file').files;
+
+        const arr = []
+
+        Object.keys(files).forEach(i => {
+            const file = files[i];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                arr.push({
+                    item: file.name,
+                    data: e.target.result,
+                    type: file.type
+                })
+
+                setAllInfo((prevArray) => [
+                    ...prevArray.slice(0, indexItem), // Keep the elements before the specified index
+                    { ...prevArray[indexItem], data: arr },
+                    ...prevArray.slice(indexItem + 1), // Keep the elements after the specified outer index
+                ]);
+
+                setFinalArr([...allInfo.slice(0, indexItem), // Keep the elements before the specified index
+                { ...allInfo[indexItem], data: arr },
+                ...allInfo.slice(indexItem + 1)])
+
+                dispatch(studentsActions.update({
+                    ...students[currentStudent],
+                    asset: [
+                        ...allInfo.slice(0, indexItem), // Keep the elements before the specified index
+                        { ...allInfo[indexItem], data: arr },
+                        ...allInfo.slice(indexItem + 1), // Keep the elements after the specified outer index
+                    ]
+                }))
+                setLoadFile(e.target.result)
+            }
+            reader.readAsDataURL(file);
+        })
+
+
+    }
+
     return (
         <>
-            <Modal size='7xl' show={show} onClose={() => setShow(false)}>
+            <Modal style={{ minWidth: '66%' }} position='center-left' show={show} onClose={() => setShow(false)}>
                 <Modal.Header>
                     Thêm đối tượng mới
                 </Modal.Header>
@@ -198,39 +269,24 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
                         {properitiesList?.map((item, idx) => (
                             <>
                                 <div className="w-full flex gap-4 mb-2">
-                                    <input type="text" id="name" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder={`Nhập tên đối tượng ${idx + 1}`} required />
-                                    <input type="text" id="proType" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập điểm" required />
-                                    <input type="text" id="proType" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập tỷ trọng" required />
+                                    <input type="text" id="name" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] nameTest`} placeholder={`Nhập tên đối tượng ${idx + 1}`} onChange={handleShowInfo} required />
+                                    <input type="text" id="point" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] pointTest`} placeholder="Nhập điểm" onChange={handleShowInfo} required />
+                                    <input type="text" id="ratio" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ratioTest`} placeholder="Nhập tỷ trọng" onChange={handleShowInfo} required />
                                     {idx > 0 && (
                                         <Minus size={24} color='red' weight="bold" className="cursor-pointer" onClick={() => handleDelete(idx)} />
                                     )}
 
                                 </div>
                                 <div className="flex items-center gap-4 flex-wrap mb-2">
-                                    {recommendLabel.map((item, idx) => (
+                                    {recommendLabel.map((item, idx2) => (
                                         <>
-                                            <Badge color={signLabel[idx]} className="cursor-pointer" >{item.name}</Badge>
+                                            <Badge color={signLabel[idx2]} className="cursor-pointer" onClick={() => handlePostLabel(item.name, idx)} >{item.name}</Badge>
                                         </>
                                     ))}
 
                                 </div>
                             </>
                         ))}
-
-                        {/* <div className="w-full p-2 flex flex-wrap items-center">
-
-                            {properitiesList?.map((item, idx) => (
-                                <div className="w-1/2 pb-4 flex items-center">
-                                    <span className="pr-4 w-[30%] truncate">{item.name}:</span>
-                                    {item.file === 'string' ? (
-                                        <input type="text" id="proType" className={`bg-white border-[1px] border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập tên đối tượng" required />
-                                    ) : (
-                                        <input class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="file_input" type="file"></input>
-                                    )}
-                                    <XCircle color="black" size={20} className="mx-4" onClick={() => handleSelectedPro(idx)} />
-                                </div>
-                            ))}
-                        </div> */}
 
                         <span className="w-full flex gap-4 mt-2 items-center">Bạn có muốn thêm đối tượng bằng từ ngữ?
                             <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
@@ -241,17 +297,17 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
                             <>
                                 <div className="w-full flex gap-4 mb-2 items-center">
 
-                                    <input type="text" id="name" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder={`Nhập tên đối tượng ${idx + 1}`} required />
-                                    <input type="text" id="proType" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập giá trị" required />
-                                    <input type="text" id="proType" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] `} placeholder="Nhập đánh giá chi tiết" required />
+                                    <input type="text" id="name" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] nameText`} placeholder={`Nhập tên đối tượng ${idx + 1}`} required />
+                                    <input type="text" id="point" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] pointText`} placeholder="Nhập giá trị" required />
+                                    <input type="text" id="ratio" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ratioText`} placeholder="Nhập đánh giá chi tiết" required />
                                     {idx > 0 && (
                                         <Minus size={24} color='red' weight="bold" className="cursor-pointer" onClick={() => handleDelete(idx)} />
                                     )}
                                 </div>
                                 <div className="flex items-center gap-4 flex-wrap mb-2">
-                                    {recommendLabel.map((item, idx) => (
+                                    {recommendLabel.map((item, idx2) => (
                                         <>
-                                            <Badge color={signLabel[idx]} className="cursor-pointer">{item.name}</Badge>
+                                            <Badge color={signLabel[idx2]} className="cursor-pointer" onClick={() => handlePostLabel2(item.name, idx)}>{item.name}</Badge>
                                         </>
                                     ))}
 
@@ -259,22 +315,31 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
                             </>
                         ))}
 
-                        <div className="cursor-pointer mt-2 px-4 py-[3px] flex justify-center items-center" onClick={handleAddProperities}>Thêm thuộc tính</div>
+                        <div className="w-full flex gap-4">
+                            <div className="cursor-pointer mt-2 px-4 py-[3px] w-1/2 flex justify-center items-center bg-blue-200 rounded-full" onClick={handleAddProperities}>Thêm</div>
+                            <div className="cursor-pointer mt-2 px-4 py-[3px] w-1/2 flex justify-center items-center bg-gray-200 rounded-full" onClick={handleSaveInfo}>Lưu tạm thời</div>
+
+                        </div>
                         <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
 
                         <span className="w-full py-2">Chi tiết đối tượng</span>
                         <div className="w-full mt-2 p-4 bg-[rgb(224,224,224)] rounded-xl">
-                            <div className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black text-black`}>
-                                <div className="cursor-pointer w-1/3" >1. Giáo trình ABC</div>
-                                <div>Điểm số: 100 điểm</div>
-                                <div>Tỷ trọng: 100 %</div>
-                                <div className="flex items-center justify-center gap-2">
-                                    <Info size={20} color='black' className="cursor-pointer" />
-                                    <Pencil size={20} color='black' className="cursor-pointer" />
-                                    <LinkSimpleHorizontal size={20} color='black' />
-                                    <X size={20} color='black' className="cursor-pointer" />
+
+                            {finalArr ? finalArr?.map((item, idx) => (
+                                <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black text-black`}>
+                                    <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
+                                    <div>Điểm số: {item.point} điểm</div>
+                                    <div>Tỷ trọng: {item.ratio} %</div>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <Info size={20} color='black' className="cursor-pointer" />
+                                        <Pencil size={20} color='black' className="cursor-pointer" />
+                                        <LinkSimpleHorizontal size={20} color='black' />
+                                        <X size={20} color='black' className="cursor-pointer" />
+                                    </div>
                                 </div>
-                            </div>
+                            )) : (
+                                <></>
+                            )}
 
                             <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
                             <span>Tài sản/dữ liệu của đối tượng: <span className="italic">{info?.name}</span></span>
@@ -288,16 +353,49 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
                                 </form>
                             </div>
                             <div className="w-full bg-[rgba(255,255,255,0.4)] mt-2 rounded-xl flex justify-center items-center">
-                                <div className="w-full py-8 flex justify-center items-center">
-                                    <span className="text-gray-400">Vui lòng thêm đối tượng để thực hiện bổ sung tài sản/dữ liệu của đối tượng</span>
-                                </div>
+
+                                {info ? loadFile ? (
+                                    <>
+                                        <div className="w-full h-full flex flex-wrap p-8 gap-8">
+                                            {allInfo[indexItem] && allInfo[indexItem]?.data?.map((item, idx) => (
+                                                <div className="relative">
+                                                    <img id="preview" key={idx} src={item.data} className="h-32 w-32 object-fit rounded-lg shadow-xl" />
+                                                    <div className="p-[3px] rounded-full flex justify-center items-center bg-gray-700 absolute -top-2 -right-2 cursor-pointer" onClick={() => handleDeleteImage(idx)}>
+                                                        <X size={12} color='white' />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <label htmlFor="file" className="h-32 w-32 flex justify-center items-center bg-yellow-200 cursor-pointer">
+                                                <Plus size={20} color="black" />
+                                            </label>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <label htmlFor="file" className="w-full h-full flex pt-8 pb-8 justify-center items-center cursor-pointer">
+                                            <Plus size={20} color="black" />
+                                        </label>
+                                    </>
+                                ) : (
+                                    <div className="w-full py-8 flex justify-center items-center">
+                                        <span className="text-gray-400">Vui lòng thêm đối tượng để thực hiện bổ sung tài sản/dữ liệu của đối tượng</span>
+                                    </div>
+                                )}
+
                             </div>
+                            {/*  */}
+                            <input type="file" id="file" name="file" multiple className="hidden" onChange={changeFile} accept="image/*,application/pdf,audio/mpeg3"></input>
+
                             <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
                             {/* Danh sách dữ liệu */}
                             <span>Data dữ liệu theo dạng JSON:</span>
                             <div className="my-2 flex items-center gap-4">
                                 <span>Hiện JSON tổng: </span>
-                                <ToggleSwitch />
+                                <ToggleSwitch checked={isSwitch} onChange={setIsSwitch} />
+                            </div>
+
+                            <div className="w-full bg-white p-4 mt-2 rounded-xl flex justify-start items-center overflow-x-auto">
+                                <JSONPretty id="json-pretty" data={isSwitch ? finalArr : info}></JSONPretty>
                             </div>
 
                         </div>
@@ -309,7 +407,7 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="w-full flex justify-end items-center cursor-pointer">
-                        <button type="submit" className="py-2 px-4 bg-[#3750AA] flex justify-center items-center rounded-full outline-0">
+                        <button type="submit" className="py-2 px-4 bg-[#3750AA] flex justify-center items-center rounded-full outline-0" onClick={handleSubmit}>
                             <span className="text-white">Thêm</span>
                         </button>
                     </div>
@@ -317,6 +415,12 @@ const ModalAddStudent = ({ show, setShow, students, info, setInfo, allInfo, setA
             </Modal>
             <ModalAddObject show={showModal} setShow={setShowModal} allInfo={allInfo} setAllInfo={setAllInfo} info={info} setInfo={setInfo} />
             <ModalAddProperities show={showAddPro} setShow={setShowAddPro} properitiesList={properitiesList} setProperitiesList={setProperitiesList} />
+            {show && (
+                <div className="text-white absolute top-0 right-0 z-[9999] w-1/3 h-screen flex justify-center items-center">
+                    <Chart allInfo={finalArr} />
+                </div>
+            )}
+
         </>
     )
 }
