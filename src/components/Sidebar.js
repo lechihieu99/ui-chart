@@ -14,7 +14,7 @@ function Sidebar() {
     setIsOpen((prevState) => !prevState)
   }
   return (
-    <div className="w-full md:w-1/6 bg-gray-950 sticky top-0 z-30 flex md:flex-col py-2 items-center px-1 md:min-h-screen">
+    <div className="w-full md:w-1/6 bg-gray-950 sticky top-0 z-30 flex md:flex-col py-2 md:py-4 items-center px-1 md:min-h-screen">
       <img
         src="https://static.ybox.vn/2023/10/6/1698477954059-pham-minh-nhut10fk619l-avatar.png"
         alt=""
