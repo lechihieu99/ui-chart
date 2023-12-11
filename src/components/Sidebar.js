@@ -14,11 +14,11 @@ function Sidebar() {
     setIsOpen((prevState) => !prevState)
   }
   return (
-    <div className="w-full md:w-1/6 bg-gray-950 sticky top-0 z-30 flex md:flex-col py-4 items-center px-1 md:min-h-screen">
+    <div className="w-full md:w-1/6 bg-gray-950 sticky top-0 z-30 flex md:flex-col py-2 md:py-4 items-center px-1 md:min-h-screen">
       <img
         src="https://static.ybox.vn/2023/10/6/1698477954059-pham-minh-nhut10fk619l-avatar.png"
         alt=""
-        className="w-12 mx-2 md:w-1/3 md:mt-1 rounded-full md:mx-auto "
+        className="w-10 mx-2 md:w-1/3 md:mt-1 rounded-full md:mx-auto "
       />
       <p className="text-l w-full text-left md:mt-2 md:text-center text-semibold text-white">
         Bitdance Entertaiment
