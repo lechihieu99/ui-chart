@@ -28,10 +28,6 @@ function App() {
 
   const students = useSelector(state => state.students);
 
-  useEffect(() => {
-    console.log(students)
-  }, [students])
-
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route element={<Layout />}>
