@@ -4,21 +4,11 @@ import { Check, Info, LinkSimpleHorizontal, Minus, Pencil, Plus, Star, X, XCircl
 import { Badge, Modal, ToggleSwitch } from "flowbite-react";
 import { useSelector, useDispatch } from "react-redux";
 import { studentsActions } from "../../store/features/studentsSlice";
+import PDF from '../../asset/images/pdf_icon.svg'
 
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import ModalAddObject from "./ModalAddObject";
-import ModalAddProperities from "./ModalAddPropertities";
-import DefaultInfo from "../defaultInfo/DefaultInfo";
 import JSONPretty from 'react-json-pretty';
 import Chart from "../Chart";
-
-const options = [
-    { value: 'student', label: 'Học sinh' },
-    { value: 'teacher', label: 'Giáo viên' },
-    { value: 'company', label: 'Công ty' },
-    { value: 'other', label: 'Khác' }
-];
 
 const recommendLabel = [
 
@@ -77,10 +67,6 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
     })
 
     const students = useSelector(state => state.students);
-
-    const [showAddPro, setShowAddPro] = useState(false)
-    const [showModal, setShowModal] = useState(false)
-
     const [properitiesList, setProperitiesList] = useState([{
         id: 0
     }])
@@ -90,6 +76,7 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
     const [indexItem, setIndexItem] = useState()
     const [loadFile, setLoadFile] = useState(false)
     const [isSwitch, setIsSwitch] = useState(false)
+    const [optionType, setOptionType] = useState(false)
 
     const dispatch = useDispatch();
 
@@ -257,9 +244,13 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
 
     }
 
+    const optionalType = (e) => {
+        setOptionType(e.target.checked)
+    }
+
     return (
         <>
-            <Modal style={{ minWidth: '66%' }} position='center-left' show={show} onClose={() => setShow(false)}>
+            <Modal style={{ minWidth: window.innerWidth > 1280 ? '66%' : '90%' }} position={`${finalArr?.length > 0 && window.innerWidth > 1280 ? 'center-left' : 'center'}`} show={show} onClose={() => setShow(false)}>
                 <Modal.Header>
                     Thêm đối tượng mới
                 </Modal.Header>
@@ -268,16 +259,16 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
 
                         {properitiesList?.map((item, idx) => (
                             <>
-                                <div className="w-full flex gap-4 mb-2">
-                                    <input type="text" id="name" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] nameTest`} placeholder={`Nhập tên đối tượng ${idx + 1}`} onChange={handleShowInfo} required />
-                                    <input type="text" id="point" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] pointTest`} placeholder="Nhập điểm" onChange={handleShowInfo} required />
-                                    <input type="text" id="ratio" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ratioTest`} placeholder="Nhập tỷ trọng" onChange={handleShowInfo} required />
+                                <div className={`w-full flex flex-col md:flex-row gap-4 mb-2 ${optionType && "opacity-50"}`}>
+                                    <input type="text" id="name" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${optionType && "cursor-not-allowed"} nameTest`} disabled={optionType ? true : false} placeholder={`Nhập tên đối tượng ${idx + 1}`} onChange={handleShowInfo} required />
+                                    <input type="text" id="point" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${optionType && "cursor-not-allowed"} pointTest`} disabled={optionType ? true : false} placeholder="Nhập điểm" onChange={handleShowInfo} required />
+                                    <input type="text" id="ratio" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ${optionType && "cursor-not-allowed"} ratioTest`} disabled={optionType ? true : false} placeholder="Nhập tỷ trọng" onChange={handleShowInfo} required />
                                     {idx > 0 && (
                                         <Minus size={24} color='red' weight="bold" className="cursor-pointer" onClick={() => handleDelete(idx)} />
                                     )}
 
                                 </div>
-                                <div className="flex items-center gap-4 flex-wrap mb-2">
+                                <div className={`flex items-center gap-4 flex-wrap mb-2 ${optionType && "opacity-50"}`}>
                                     {recommendLabel.map((item, idx2) => (
                                         <>
                                             <Badge color={signLabel[idx2]} className="cursor-pointer" onClick={() => handlePostLabel(item.name, idx)} >{item.name}</Badge>
@@ -289,22 +280,21 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                         ))}
 
                         <span className="w-full flex gap-4 mt-2 items-center">Bạn có muốn thêm đối tượng bằng từ ngữ?
-                            <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                            <input id="default-checkbox" onChange={optionalType} type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                         </span>
-
 
                         {properitiesList?.map((item, idx) => (
                             <>
-                                <div className="w-full flex gap-4 mb-2 items-center">
+                                <div className={`w-full flex flex-col md:flex-row gap-4 mb-2 items-center ${!optionType && "hidden"}`}>
 
-                                    <input type="text" id="name" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] nameText`} placeholder={`Nhập tên đối tượng ${idx + 1}`} required />
-                                    <input type="text" id="point" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] pointText`} placeholder="Nhập giá trị" required />
-                                    <input type="text" id="ratio" className={`bg-white border-[1px] w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ratioText`} placeholder="Nhập đánh giá chi tiết" required />
+                                    <input type="text" id="name" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] nameText`} placeholder={`Nhập tên đối tượng ${idx + 1}`} required />
+                                    <input type="text" id="point" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] pointText`} placeholder="Nhập giá trị" required />
+                                    <input type="text" id="ratio" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ratioText`} placeholder="Nhập đánh giá chi tiết" required />
                                     {idx > 0 && (
                                         <Minus size={24} color='red' weight="bold" className="cursor-pointer" onClick={() => handleDelete(idx)} />
                                     )}
                                 </div>
-                                <div className="flex items-center gap-4 flex-wrap mb-2">
+                                <div className={`flex items-center gap-4 flex-wrap mb-2 ${!optionType && "hidden"}`}>
                                     {recommendLabel.map((item, idx2) => (
                                         <>
                                             <Badge color={signLabel[idx2]} className="cursor-pointer" onClick={() => handlePostLabel2(item.name, idx)}>{item.name}</Badge>
@@ -326,11 +316,11 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                         <div className="w-full mt-2 p-4 bg-[rgb(224,224,224)] rounded-xl">
 
                             {finalArr ? finalArr?.map((item, idx) => (
-                                <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex justify-between items-center rounded-xl mb-2 hover:text-black text-black`}>
-                                    <div className="cursor-pointer w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
+                                <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex flex-col md:flex-row justify-between md:items-center rounded-xl mb-2 hover:text-black text-black`}>
+                                    <div className="cursor-pointer md:w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
                                     <div>Điểm số: {item.point} điểm</div>
                                     <div>Tỷ trọng: {item.ratio} %</div>
-                                    <div className="flex items-center justify-center gap-2">
+                                    <div className="flex md:items-center justify-end md:justify-center gap-2">
                                         <Info size={20} color='black' className="cursor-pointer" />
                                         <Pencil size={20} color='black' className="cursor-pointer" />
                                         <LinkSimpleHorizontal size={20} color='black' />
@@ -359,7 +349,7 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                                         <div className="w-full h-full flex flex-wrap p-8 gap-8">
                                             {allInfo[indexItem] && allInfo[indexItem]?.data?.map((item, idx) => (
                                                 <div className="relative">
-                                                    <img id="preview" key={idx} src={item.data} className="h-32 w-32 object-fit rounded-lg shadow-xl" />
+                                                    <img id="preview" key={idx} src={item.type === 'application/pdf' ? PDF : item.data} className="h-32 w-32 object-fit rounded-lg shadow-xl" />
                                                     <div className="p-[3px] rounded-full flex justify-center items-center bg-gray-700 absolute -top-2 -right-2 cursor-pointer" onClick={() => handleDeleteImage(idx)}>
                                                         <X size={12} color='white' />
                                                     </div>
@@ -377,7 +367,7 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                                         </label>
                                     </>
                                 ) : (
-                                    <div className="w-full py-8 flex justify-center items-center">
+                                    <div className="w-full p-8 flex justify-center items-center">
                                         <span className="text-gray-400">Vui lòng thêm đối tượng để thực hiện bổ sung tài sản/dữ liệu của đối tượng</span>
                                     </div>
                                 )}
@@ -385,7 +375,15 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                             </div>
                             {/*  */}
                             <input type="file" id="file" name="file" multiple className="hidden" onChange={changeFile} accept="image/*,application/pdf,audio/mpeg3"></input>
+                            {show && finalArr?.length > 0 && (
+                                <>
+                                    <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
 
+                                    <div className="text-white flex xl:hidden justify-center items-center ">
+                                        <Chart allInfo={finalArr} />
+                                    </div>
+                                </>
+                            )}
                             <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
                             {/* Danh sách dữ liệu */}
                             <span>Data dữ liệu theo dạng JSON:</span>
@@ -413,10 +411,8 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                     </div>
                 </Modal.Footer>
             </Modal>
-            <ModalAddObject show={showModal} setShow={setShowModal} allInfo={allInfo} setAllInfo={setAllInfo} info={info} setInfo={setInfo} />
-            <ModalAddProperities show={showAddPro} setShow={setShowAddPro} properitiesList={properitiesList} setProperitiesList={setProperitiesList} />
-            {show && (
-                <div className="text-white absolute top-0 right-0 z-[9999] w-1/3 h-screen flex justify-center items-center">
+            {show && finalArr?.length > 0 && (
+                <div className="hidden xl:flex text-white absolute top-0 right-0 z-[9999] w-1/3 h-screen justify-center items-center">
                     <Chart allInfo={finalArr} />
                 </div>
             )}
