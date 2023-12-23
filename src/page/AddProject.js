@@ -132,16 +132,6 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
     setStudent(students.find(stu => stu.id === parseInt(id)));
   }, [])
 
-  const showModalInfo = (item) => {
-    setInfo(item)
-    setShowInfo(true)
-  }
-
-  const showModalEdit = (item) => {
-    setInfo(item)
-    setShow(true)
-  }
-
   const changeFile = async (e) => {
     // console.log(e)
     // setLoadFile(true)
@@ -169,11 +159,7 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
 
         dispatch(studentsActions.update({
           ...students[currentStudent],
-          asset: [
-            ...allInfo.slice(0, indexItem), // Keep the elements before the specified index
-            { ...allInfo[indexItem], data: arr },
-            ...allInfo.slice(indexItem + 1), // Keep the elements after the specified outer index
-          ]
+          data: arr
         }))
         setLoadFile(e.target.result)
       }
@@ -185,6 +171,7 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
 
   const handleDelete = (item) => {
     var test = allInfo;
+    console.log(test)
     setAllInfo(test?.filter((el) => {
       return el.name !== item.name
     }))
@@ -200,8 +187,11 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
     setAllInfo([...arrTemp])
   }
 
-  const handleSave = () => {
-
+  const handleOpenNewPage = (idx, item) => {
+    setAllInfo(item)
+    setInfo([])
+    setStudent(item)
+    navigate({ pathname: `/object-user/${idx}` })
   }
   return (
     <>
@@ -225,25 +215,24 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
         {/* Student Detail board */}
         <div className="flex flex-col md:flex-row w-full pt-4 pb-4">
           <div className="w-full md:w-1/4 h-full">
-            <StudentBoard id={student.id} name={student.name} url={student.url} classname={student.class} gender={student.gender} />
+            <StudentBoard id={student?.id} name={student?.name} url={student?.url} classname={student?.class} gender={student?.gender} />
           </div>
           <div className="w-full mt-2 md:mt-0 md:w-3/4">
             <div className="w-full flex justify-between items-center">
-              <span className=" font-semibold">Thêm đối tượng cho <span className="text-[#7D7D7D]">{student.id} - {student.name}</span></span>
-              <div className={`py-[3px] px-4 bg-[#3750AA] flex justify-center items-center rounded-full mr-2 ${allInfo?.length === 0 && "opacity-50 cursor-not-allowed"}`} onClick={handleSave}>
+              <span className=" font-semibold">Thêm đối tượng cho <span className="text-[#7D7D7D]">{student?.id} - {student?.name}</span></span>
+              <div className={`py-[3px] px-4 bg-[#3750AA] flex justify-center items-center rounded-full mr-2 ${allInfo?.length === 0 && "opacity-50 cursor-not-allowed"}`}>
                 <span className="text-white text-center">Lưu thay đổi</span>
               </div>
             </div>
             <div className="w-full mt-2 p-4 bg-[rgba(255,255,255,0.5)] rounded-xl">
-              {students[currentStudent].asset ? students[currentStudent]?.asset?.map((item, idx) => (
+              {students[currentStudent].asset ? allInfo?.map((item, idx) => (
                 <Draggable type="components" data={item.id}>
                   <div key={idx} className={`w-full bg-[rgba(255,255,255,0.8)] py-2 px-4 flex flex-col md:flex-row justify-between md:items-center rounded-xl mb-2 hover:text-black ${indexItem === idx ? "text-black" : "text-gray-400"}`}>
                     <div className="cursor-pointer md:w-1/3" onClick={() => handleSelectItem(item, idx)}>{item.id}. {item.name}</div>
                     <div>Điểm số: {item.point} điểm</div>
                     <div>Tỷ trọng: {item.ratio} %</div>
                     <div className="flex md:items-center justify-end md:justify-center gap-2">
-                      <Info size={20} color='black' className="cursor-pointer" onClick={() => showModalInfo(item)} />
-                      <Pencil size={20} color='black' className="cursor-pointer" onClick={() => showModalEdit(item)} />
+                      <Pencil size={20} color='black' className="cursor-pointer" onClick={() => handleOpenNewPage(idx)} />
                       <LinkSimpleHorizontal size={20} color={`${item.data.length > 0 ? "black" : "gray"}`} />
                       <X size={20} color='black' className="cursor-pointer" onClick={() => handleDelete(item)} />
                     </div>
@@ -282,10 +271,10 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
               </div>
               <div className="w-full bg-[rgba(255,255,255,0.4)] mt-2 rounded-xl flex justify-center items-center">
 
-                {info ? loadFile ? (
+                {students[currentStudent]?.data ? (
                   <>
                     <div className="w-full h-full flex flex-wrap p-8 gap-8">
-                      {allInfo[indexItem] && allInfo[indexItem]?.data?.map((item, idx) => (
+                      {students[currentStudent] && students[currentStudent]?.data?.map((item, idx) => (
                         <div className="relative">
                           <img id="preview" key={idx} src={item.type === 'application/pdf' ? PDF : item.data} className="h-32 w-32 object-fit rounded-lg shadow-xl" />
                           <div className="p-[3px] rounded-full flex justify-center items-center bg-gray-700 absolute -top-2 -right-2 cursor-pointer" onClick={() => handleDeleteImage(idx)}>
@@ -304,10 +293,6 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
                       <Plus size={20} color="black" />
                     </label>
                   </>
-                ) : (
-                  <div className="w-full p-8 flex justify-center items-center">
-                    <span className="text-gray-400">Vui lòng thêm đối tượng để thực hiện bổ sung tài sản/dữ liệu của đối tượng</span>
-                  </div>
                 )}
 
               </div>
@@ -324,7 +309,7 @@ const AddProjectPage = ({ allInfo, setAllInfo, info, setInfo, currentStudent }) 
               </div>
 
               <div className="w-full bg-white p-4 mt-2 rounded-xl flex justify-start items-center overflow-x-auto">
-                <JSONPretty id="json-pretty" data={isSwitch ? allInfo : info}></JSONPretty>
+                <JSONPretty id="json-pretty" data={isSwitch ? students[currentStudent] : info}></JSONPretty>
               </div>
             </div>
           </div>

@@ -81,35 +81,32 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (allInfo)
-            setInfo(allInfo[indexItem])
-    }, [allInfo, indexItem])
+        if (finalArr)
+            setInfo(finalArr[indexItem])
+    }, [finalArr, indexItem])
 
     useEffect(() => {
         if (show)
             setFinalArr([])
     }, [show])
 
-    const handleChange = (event) => {
-        setNewStu(prev => ({
-            ...prev,
-            [event.target.name]: event.target.value
-        }))
-    }
     const handleSubmit = (event) => {
         setShow(false);
 
         finalArr?.map((item, idx) => {
-            if (type === 'parent')
+            if (type === 'parent') {
                 dispatch(studentsActions.add({
                     id: students.length + 1,
                     asset: [],
                     ...finalArr[idx]
                 }))
+
+            }
             else if (type === 'child') {
+
                 setAllInfo(prev => [
                     ...prev, {
-                        id: allInfo?.length + 1,
+                        id: finalArr?.length + 1,
                         name: item.name,
                         point: item.point,
                         ratio: item.ratio,
@@ -119,8 +116,8 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                 dispatch(studentsActions.update({
                     ...students[currentStudent],
                     asset: [
-                        ...allInfo, {
-                            id: allInfo?.length + 1,
+                        ...finalArr, {
+                            id: finalArr?.length + 1,
                             name: item.name,
                             point: item.point,
                             ratio: item.ratio,
@@ -132,12 +129,6 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
         })
     }
 
-    const handleSelectedPro = (idx) => {
-        let arr = [...properitiesList];
-        let arrTemp = [...arr.splice(idx, 1)]
-        setProperitiesList([...arr])
-    }
-
     const handleAddProperities = () => {
         setProperitiesList([...properitiesList, {
             id: count
@@ -145,6 +136,10 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
 
         setCount(count + 1)
     }
+
+    useEffect(() => {
+        console.log(finalArr)
+    }, [finalArr])
 
     const handleDelete = (idx) => {
         let arr = [...properitiesList];
@@ -160,13 +155,12 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
         var arr = []
         for (let i in nameList) {
             if (nameList[i]?.value && pointList[i]?.value && ratioList[i]?.value) {
-
                 arr.push({
                     id: arr?.length + 1,
                     name: nameList[i]?.value,
                     point: pointList[i]?.value,
                     ratio: ratioList[i]?.value,
-                    data: allInfo[indexItem]?.data ? allInfo[indexItem]?.data : []
+                    data: finalArr[i]?.data ? finalArr[i]?.data : []
                 })
             }
 
@@ -186,12 +180,9 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
         nameList[idx].value = name
     }
 
-    const handleSaveInfo = () => {
-        setAllInfo(finalArr)
-    }
-
     const handleSelectItem = (item, idx) => {
         setIndexItem(idx)
+        setInfo(item)
     }
 
     const handleDeleteImage = (idx) => {
@@ -218,15 +209,11 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                     type: file.type
                 })
 
-                setAllInfo((prevArray) => [
+                setFinalArr((prevArray) => [
                     ...prevArray.slice(0, indexItem), // Keep the elements before the specified index
                     { ...prevArray[indexItem], data: arr },
                     ...prevArray.slice(indexItem + 1), // Keep the elements after the specified outer index
                 ]);
-
-                setFinalArr([...allInfo.slice(0, indexItem), // Keep the elements before the specified index
-                { ...allInfo[indexItem], data: arr },
-                ...allInfo.slice(indexItem + 1)])
 
                 dispatch(studentsActions.update({
                     ...students[currentStudent],
@@ -306,8 +293,8 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                         ))}
 
                         <div className="w-full flex gap-4">
-                            <div className="cursor-pointer mt-2 px-4 py-[3px] w-1/2 flex justify-center items-center bg-blue-200 rounded-full" onClick={handleAddProperities}>Thêm</div>
-                            <div className="cursor-pointer mt-2 px-4 py-[3px] w-1/2 flex justify-center items-center bg-gray-200 rounded-full" onClick={handleSaveInfo}>Lưu tạm thời</div>
+                            <div className="cursor-pointer mt-2 px-4 py-[3px] w-full flex justify-center items-center bg-blue-200 rounded-full" onClick={handleAddProperities}>Thêm</div>
+                            {/* <div className="cursor-pointer mt-2 px-4 py-[3px] w-1/2 flex justify-center items-center bg-gray-200 rounded-full" onClick={handleSaveInfo}>Lưu tạm thời</div> */}
 
                         </div>
                         <div className="w-full h-[1px] rounded-full bg-black mt-2 mb-4"></div>
@@ -347,7 +334,7 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                                 {info ? loadFile ? (
                                     <>
                                         <div className="w-full h-full flex flex-wrap p-8 gap-8">
-                                            {allInfo[indexItem] && allInfo[indexItem]?.data?.map((item, idx) => (
+                                            {info.data?.map((item, idx) => (
                                                 <div className="relative">
                                                     <img id="preview" key={idx} src={item.type === 'application/pdf' ? PDF : item.data} className="h-32 w-32 object-fit rounded-lg shadow-xl" />
                                                     <div className="p-[3px] rounded-full flex justify-center items-center bg-gray-700 absolute -top-2 -right-2 cursor-pointer" onClick={() => handleDeleteImage(idx)}>

@@ -113,6 +113,8 @@ const studentsSlice = createSlice({
     update: (state, action) => {
       // 'action.payload' should contain the updated student object
       const index = state.findIndex(student => student.id === action.payload.id);
+      console.log(index)
+      console.log(action.payload)
       if (index !== -1) {
         state[index] = action.payload;
       }
