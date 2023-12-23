@@ -308,8 +308,6 @@ const ModalAddStudent = ({ type, show, setShow, info, setInfo, allInfo, setAllIn
                                     <div>Điểm số: {item.point} điểm</div>
                                     <div>Tỷ trọng: {item.ratio} %</div>
                                     <div className="flex md:items-center justify-end md:justify-center gap-2">
-                                        <Info size={20} color='black' className="cursor-pointer" />
-                                        <Pencil size={20} color='black' className="cursor-pointer" />
                                         <LinkSimpleHorizontal size={20} color='black' />
                                         <X size={20} color='black' className="cursor-pointer" />
                                     </div>
