@@ -2,3 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+.PhotoView-Slider__Backdrop {
+    background-color: rgba(0, 0, 0, 0.466) !important;
+    backdrop-filter: blur(5px) !important;
+}

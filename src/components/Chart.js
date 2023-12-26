@@ -59,7 +59,6 @@ function Chart({ allInfo }) {
   ));
 
   const onDrop = (value) => {
-    console.log(value)
     const dropId = parseInt(value.components); // id của elemnt được drop vào
     var xPosition = 0
     if (!chartData.data.find(col => col.id === dropId)) { // element chưa xuất hiện trong chart
