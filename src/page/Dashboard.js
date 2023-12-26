@@ -65,7 +65,7 @@ function Dashboard() {
   }
   return (
     <>
-      <div>
+      <div className='p-2'>
         <Header />
         <div className="md:grid md:grid-cols-12 md:gap-4">
           <div className="md:col-span-8">
@@ -91,7 +91,7 @@ function Dashboard() {
                     <td>Name</td>
                     <td>ID</td>
                     <td>{window.innerWidth > 768 ? 'Email Address' : 'Email'}</td>
-                    {window.innerWidth > 768 ? <td>Action</td> : <></>}
+                    <td>Action</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -109,14 +109,14 @@ function Dashboard() {
                       </td>
                       <td>{item.id ? item.id : "None"}</td>
                       <td>{item.email}</td>
-                      {window.innerWidth > 768 ? <td><div className="flex md:items-center justify-end md:justify-center gap-2">
+                      <td><div className="flex md:items-center justify-end md:justify-center gap-2">
                         <Link to={`/object/${item.id}`}>
                           <Pencil size={20} color='black' className="cursor-pointer" />
                         </Link>
                         {/* <LinkSimpleHorizontal size={20} color={`${item.data.length > 0 ? "black" : "gray"}`} /> */}
                         <X size={20} color='black' className="cursor-pointer" onClick={() => handleDelete(item.id)} />
                       </div>
-                      </td> : <></>}
+                      </td>
 
                     </tr>
                   ))}
@@ -129,6 +129,7 @@ function Dashboard() {
           {/* Student Detail board */}
           <div className="w-full h-[15vh] overflow-hidden mt-2 md:h-full md:col-span-4">
             <StudentBoard
+              page='dashboard'
               id={allObject?.data[current]?.id}
               name={allObject?.data[current]?.name}
               url={allObject?.data[current]?.url}

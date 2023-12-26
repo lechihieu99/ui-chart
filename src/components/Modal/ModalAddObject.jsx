@@ -163,9 +163,9 @@ const ModalAddObject = ({ parent, show, setShow }) => {
 
     }
 
-    useEffect(() => {
-        console.log(finalArr)
-    }, [finalArr])
+    // useEffect(() => {
+    //     console.log(finalArr)
+    // }, [finalArr])
 
     return (
         <>
@@ -177,15 +177,26 @@ const ModalAddObject = ({ parent, show, setShow }) => {
                     <form action="javascript:void(0)" onSubmit={handleSubmit}>
 
                         {properitiesList?.map((item, idx) => (
-                            <>
-                                <div className={`w-full flex flex-col md:flex-row gap-4 mb-2 items-center`}>
+                            <div className="w-full mb-4 border-b-[1px] border-gray-400">
+                                <div className={`w-full flex flex-col md:flex-row gap-4 md:mb-2 items-center`}>
 
                                     <input type="text" id="name" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] nameText`} onChange={handleShowInfo} placeholder={`Nhập tên đối tượng ${idx + 1}`} required />
+                                    <div className={`flex md:hidden items-center gap-4 flex-wrap`}>
+                                        {recommendLabel.map((item, idx2) => (
+                                            <>
+                                                {document.getElementsByClassName('nameText')[idx]?.value && item.name.toLowerCase().includes(document.getElementsByClassName('nameText')[idx]?.value?.toLowerCase()) && (
+                                                    <Badge color={signLabel[idx2]} className="cursor-pointer" onClick={() => handlePostLabel(item.name, idx)}>{item.name}</Badge>
+
+                                                )}
+                                            </>
+                                        ))}
+
+                                    </div>
                                     <input type="text" id="pointText" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] pointText`} onChange={handleShowInfo} placeholder="Nhập giá trị (bằng chữ)" required />
                                     <input type="text" id="ratioText" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ratioText`} onChange={handleShowInfo} placeholder="Nhập đánh giá chi tiết (bằng chữ)" required />
 
                                 </div>
-                                <div className={`flex items-center gap-4 flex-wrap mb-2`}>
+                                <div className={`hidden md:flex items-center gap-4 flex-wrap mb-2`}>
                                     {recommendLabel.map((item, idx2) => (
                                         <>
                                             {document.getElementsByClassName('nameText')[idx]?.value && item.name.toLowerCase().includes(document.getElementsByClassName('nameText')[idx]?.value?.toLowerCase()) && (
@@ -205,7 +216,7 @@ const ModalAddObject = ({ parent, show, setShow }) => {
                                     )}
                                 </div>
 
-                            </>
+                            </div>
                         ))}
 
                         <div className="w-full flex gap-4">

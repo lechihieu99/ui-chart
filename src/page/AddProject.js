@@ -123,7 +123,7 @@ const AddProjectPage = () => {
   }
   return (
     <>
-      <div className="w-full md:h-screen overflow-y-auto">
+      <div className="w-full p-2 md:h-screen overflow-y-auto">
         <Header />
         <div className="grid grid-cols-12 gap-4">
           <div onClick={() => navigate(-1)} className="flex justify-center items-center cursor-pointer">
