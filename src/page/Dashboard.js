@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import StudentBoard from '../components/StudentBoard';
-import ModalAddStudent from '../components/Modal/ModalAddStudent';
+import { getAllObject, getObject, removeObject } from '../redux/slice/object.slice';
+import ModalAddObject from '../components/Modal/ModalAddObject';
+import { Pencil, X } from '@phosphor-icons/react';
 
 
-function Dashboard({ info, setInfo, allInfo, setAllInfo, currentStudent, setCurrentStudent }) {
-  const students = useSelector(state => state.students);
+function Dashboard() {
   const dispatch = useDispatch();
+  const location = useLocation()
   const [show, setShow] = useState(false);
+  const [current, setCurrent] = useState(0)
+
+  const allObject = useSelector((state) => state.object.allObject)
+
+  const statusAdd = useSelector((state) => state.object.statusAdd)
+  const statusRemoveObject = useSelector((state) => state.object.statusRemoveObject)
+
+  useEffect(() => {
+    dispatch(getAllObject())
+  }, [statusAdd, statusRemoveObject])
+
+  // useEffect(() => {
+  //   console.log(allObject?.data)
+  // }, [allObject])
 
   const handleSearch = (e) => {
     const searchValue = e.target.value.toLowerCase();
@@ -39,6 +55,14 @@ function Dashboard({ info, setInfo, allInfo, setAllInfo, currentStudent, setCurr
       row.style.display = rowContainsSearchValue ? '' : 'none';
     }
   }
+
+  const handleDelete = (id) => {
+    dispatch(removeObject({
+      id: id
+    }))
+    const pathnameSegments = location.pathname.split('/').filter(segment => segment !== '')
+    dispatch(getObject({ id: pathnameSegments[1] }))
+  }
   return (
     <>
       <div>
@@ -67,23 +91,32 @@ function Dashboard({ info, setInfo, allInfo, setAllInfo, currentStudent, setCurr
                     <td>Name</td>
                     <td>ID</td>
                     <td>{window.innerWidth > 768 ? 'Email Address' : 'Email'}</td>
-                    {window.innerWidth > 768 ? <td>Other</td> : <></>}
+                    {window.innerWidth > 768 ? <td>Action</td> : <></>}
                   </tr>
                 </thead>
                 <tbody>
-                  {students.map((stu, idx) => (
-                    <tr key={stu.id} onMouseOver={() => setCurrentStudent(idx)}>
+                  {allObject?.data?.map((item, idx) => (
+                    <tr key={item.id} onMouseEnter={() => setCurrent(idx)}>
 
-                      <td className='p-2'>{stu.id}</td>
+                      <td className='p-2'>{idx + 1}</td>
                       <td className='p-2'>
-                        <Link to={`/object-user/${stu.id}`} className='flex items-center'>
-                          <img src={stu.url} alt="" className='w-10 h-10 rounded-full object-center object-cover' />
-                          <span className='text-light ms-2'>{stu.name}</span>
+                        <Link to={`/object/${item.id}`} className='flex items-center'>
+
+                          <img src={item.url} alt="" className='w-10 h-10 rounded-full object-center object-cover' />
+
+                          <span className='text-light ms-2 w-52'>{item.name}</span>
                         </Link>
                       </td>
-                      <td>{stu.idObj ? stu.idObj : "None"}</td>
-                      <td>{stu.email}</td>
-                      {window.innerWidth > 768 ? <td>{stu.type ? stu.type : "None"}</td> : <></>}
+                      <td>{item.id ? item.id : "None"}</td>
+                      <td>{item.email}</td>
+                      {window.innerWidth > 768 ? <td><div className="flex md:items-center justify-end md:justify-center gap-2">
+                        <Link to={`/object/${item.id}`}>
+                          <Pencil size={20} color='black' className="cursor-pointer" />
+                        </Link>
+                        {/* <LinkSimpleHorizontal size={20} color={`${item.data.length > 0 ? "black" : "gray"}`} /> */}
+                        <X size={20} color='black' className="cursor-pointer" onClick={() => handleDelete(item.id)} />
+                      </div>
+                      </td> : <></>}
 
                     </tr>
                   ))}
@@ -95,13 +128,23 @@ function Dashboard({ info, setInfo, allInfo, setAllInfo, currentStudent, setCurr
           </div>
           {/* Student Detail board */}
           <div className="w-full h-[15vh] overflow-hidden mt-2 md:h-full md:col-span-4">
-            <StudentBoard id={students[currentStudent].id} name={students[currentStudent].name} url={students[currentStudent].url} classname={students[currentStudent].class} gender={students[currentStudent].gender} />
+            <StudentBoard
+              id={allObject?.data[current]?.id}
+              name={allObject?.data[current]?.name}
+              url={allObject?.data[current]?.url}
+              classname={allObject?.data[current]?.class}
+              gender={allObject?.data[current]?.gender}
+              pointText={allObject?.data[current]?.pointText}
+              ratioText={allObject?.data[current]?.ratioText}
+              point={allObject?.data[current]?.point}
+              ratio={allObject?.data[current]?.ratio}
+            />
           </div>
         </div>
       </div>
       {
         show &&
-        <ModalAddStudent type='parent' show={true} setShow={setShow} students={students} info={info} setInfo={setInfo} allInfo={allInfo} setAllInfo={setAllInfo} currentStudent={currentStudent} />
+        <ModalAddObject parent='' show={true} setShow={setShow} />
       }
     </>
   );

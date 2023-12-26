@@ -4,7 +4,7 @@ import PersonalRanking from "./personalRank/PersonalRanking";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
-const RankingTab = ({ students }) => {
+const RankingTab = ({ objects, idx }) => {
     return (
         <>
             <Tabs>
@@ -14,14 +14,14 @@ const RankingTab = ({ students }) => {
                 </TabList>
 
                 <TabPanel>
-                    {students?.map((item) => (
-                        <PersonalRanking data={item} />
+                    {objects?.map((item, idx) => (
+                        <PersonalRanking data={item} idx={idx + 1} />
 
                     ))}
                 </TabPanel>
                 <TabPanel>
-                    {students?.map((item) => (
-                        <PersonalRanking data={item} />
+                    {objects?.map((item, idx) => (
+                        <PersonalRanking data={item} idx={idx + 1} />
 
                     ))}
                 </TabPanel>

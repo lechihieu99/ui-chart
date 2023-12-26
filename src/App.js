@@ -1,38 +1,27 @@
 import './App.css';
 import "./scss/index.scss";
 import "./scss/chart.scss";
-import Sidebar from './components/Sidebar';
-import Chart from "./components/Chart"
 import Layout from './components/Layout';
 import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
-  BrowserRouter,
-  Routes,
   Route,
 } from "react-router-dom";
 
 import Dashboard from './page/Dashboard';
 import AddProjectPage from './page/AddProject';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import RankingPage from './page/RankingPage';
 
 
 
 function App() {
-  const [info, setInfo] = useState();
-  const [allInfo, setAllInfo] = useState([])
-  const [currentStudent, setCurrentStudent] = useState(0);
-
-  const students = useSelector(state => state.students);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route element={<Layout />}>
-        <Route path='/' element={<Dashboard allInfo={allInfo} setAllInfo={setAllInfo} info={info} setInfo={setInfo} currentStudent={currentStudent} setCurrentStudent={setCurrentStudent} />} />
-        <Route path='/object-user/:id' element={<AddProjectPage allInfo={allInfo} setAllInfo={setAllInfo} info={info} setInfo={setInfo} currentStudent={currentStudent} />} />
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/object/:id' element={<AddProjectPage />} />
         <Route path='/rank' element={<RankingPage />} />
 
       </Route>
@@ -40,7 +29,9 @@ function App() {
   )
 
   return (
-    <RouterProvider router={router} />
+    <>
+      <RouterProvider router={router} />
+    </>
   );
 }
 

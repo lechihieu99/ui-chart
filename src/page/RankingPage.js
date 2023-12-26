@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TabComponents from "../components/tabs/Tab";
 import RankingTab from "../components/RankingTab";
+import { getAllObject } from "../redux/slice/object.slice";
 
 const RankingPage = () => {
-    const students = useSelector(state => state.students)
+    const dispatch = useDispatch()
+    const allObject = useSelector((state) => state.object.allObject)
+
+    useEffect(() => {
+        dispatch(getAllObject())
+    }, [])
     return (
         <>
             <div className="p-4">
@@ -19,9 +25,9 @@ const RankingPage = () => {
                     </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-8 mt-4">
-                    <TabComponents students={students} />
+                    <TabComponents objects={allObject?.data} />
                     <div className="w-full md:w-1/3 rounded-lg overflow-hidden">
-                        <RankingTab students={students} />
+                        <RankingTab objects={allObject?.data} />
                     </div>
 
                 </div>
