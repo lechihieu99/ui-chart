@@ -9,6 +9,10 @@ export const objectController = {
         const url = `/get-object/${id}`
         return axiosApi.get(url)
     },
+    getAllRanking() {
+        const url = '/get-all-ranking'
+        return axiosApi.get(url)
+    },
     getAllChildren(parent) {
         const url = `/get-all-children/${parent}`
         return axiosApi.get(url)
@@ -17,7 +21,7 @@ export const objectController = {
         const url = `/get-data-object/${parentId}`
         return axiosApi.get(url)
     },
-    addObject(name, email, url, pointText, ratioText, point, ratio, parent, data) {
+    addObject(name, email, url, pointText, ratioText, point, ratio, parent, data, group) {
         const urlServer = '/add-object'
         const payload = {
             name: name,
@@ -28,7 +32,8 @@ export const objectController = {
             point: point,
             ratio: ratio,
             parent: parent,
-            data: data
+            data: data,
+            group: group
         }
         return axiosApi.post(urlServer, payload)
     },
@@ -42,6 +47,11 @@ export const objectController = {
             point: point,
             ratio: ratio
         }
+        return axiosApi.post(url, payload)
+    },
+    rankingGroup(group) {
+        const url = '/ranking-group'
+        const payload = { group: group }
         return axiosApi.post(url, payload)
     },
     removeObject(id) {

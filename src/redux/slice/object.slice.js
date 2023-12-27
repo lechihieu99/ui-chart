@@ -24,6 +24,15 @@ export const getObject = createAsyncThunk('getObject', async (data) => {
     }
 })
 
+export const getAllRanking = createAsyncThunk('getAllRanking', async () => {
+    try {
+        const getAll = await objectController.getAllRanking()
+        return getAll;
+    } catch (error) {
+        return error
+    }
+})
+
 export const getAllChildren = createAsyncThunk('getAllChildren', async (data) => {
     try {
         const { parent } = data
@@ -46,8 +55,8 @@ export const getDataObject = createAsyncThunk('getDataObject', async (data) => {
 
 export const addObject = createAsyncThunk('addObject', async (data) => {
     try {
-        const { name, email, url, pointText, ratioText, point, ratio, parent, dataFile } = data
-        const getAll = await objectController.addObject(name, email, url, pointText, ratioText, point, ratio, parent, dataFile)
+        const { name, email, url, pointText, ratioText, point, ratio, parent, dataFile, group } = data
+        const getAll = await objectController.addObject(name, email, url, pointText, ratioText, point, ratio, parent, dataFile, group)
         return getAll;
     } catch (error) {
         return error
@@ -58,6 +67,16 @@ export const editObject = createAsyncThunk('editObject', async (data) => {
     try {
         const { id, name, pointText, ratioText, point, ratio } = data
         const getAll = await objectController.editObject(id, name, pointText, ratioText, point, ratio)
+        return getAll;
+    } catch (error) {
+        return error
+    }
+})
+
+export const rankingGroup = createAsyncThunk('rankingGroup', async (data) => {
+    try {
+        const { group } = data;
+        const getAll = await objectController.rankingGroup(group)
         return getAll;
     } catch (error) {
         return error
@@ -135,6 +154,18 @@ export const objectSlice = createSlice({
             state.status = 'failed'
         })
 
+        // getAllRanking
+        builder.addCase(getAllRanking.pending, (state) => {
+            state.status = 'loading'
+        })
+        builder.addCase(getAllRanking.fulfilled, (state, action) => {
+            state.status = 'success'
+            state.allRanking = action.payload
+        })
+        builder.addCase(getAllRanking.rejected, (state) => {
+            state.status = 'failed'
+        })
+
         // getDataObject
         builder.addCase(getDataObject.pending, (state) => {
             state.status = 'loading'
@@ -167,6 +198,18 @@ export const objectSlice = createSlice({
         })
         builder.addCase(editObject.rejected, (state) => {
             state.statusEdit = 'failed'
+        })
+
+        // rankingGroup
+        builder.addCase(rankingGroup.pending, (state) => {
+            state.status = 'loading'
+        })
+        builder.addCase(rankingGroup.fulfilled, (state, action) => {
+            state.status = 'success'
+            state.rankingGroup = action.payload
+        })
+        builder.addCase(rankingGroup.rejected, (state) => {
+            state.status = 'failed'
         })
 
         // removeObject

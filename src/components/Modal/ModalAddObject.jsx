@@ -4,10 +4,13 @@ import { Badge, Modal, ToggleSwitch } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import PDF from '../../asset/images/pdf_icon.svg'
 
+import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+
 import JSONPretty from 'react-json-pretty';
 import Chart from "../Chart";
 import { addDataObject, addObject } from "../../redux/slice/object.slice";
+import { options } from "../GroupType";
 
 const recommendLabel = [
 
@@ -72,7 +75,8 @@ const ModalAddObject = ({ parent, show, setShow }) => {
                 point: item.point,
                 ratio: item.ratio,
                 parent: parent,
-                dataFile: item.data
+                dataFile: item.data,
+                group: item.group
             }))
         })
 
@@ -100,16 +104,19 @@ const ModalAddObject = ({ parent, show, setShow }) => {
         const pointNumList = document.getElementsByClassName('pointNum')
         const ratioNumList = document.getElementsByClassName('ratioNum')
 
+        const group = document.getElementsByClassName('Dropdown-placeholder')
+
         var arr = []
         for (let i in nameList) {
-            if (nameList[i]?.value && pointList[i]?.value && ratioList[i]?.value && pointNumList[i]?.value && ratioNumList[i]?.value) {
+            if (i < options.length && nameList[i]?.value && pointList[i]?.value && ratioList[i]?.value && pointNumList[i]?.value && ratioNumList[i]?.value && group[i].textContent) {
                 arr.push({
                     name: nameList[i]?.value,
                     pointText: pointList[i]?.value,
                     ratioText: ratioList[i]?.value,
                     point: pointNumList[i]?.value,
                     ratio: ratioNumList[i]?.value,
-                    data: finalArr[i]?.data ? finalArr[i]?.data : []
+                    data: finalArr[i]?.data ? finalArr[i]?.data : [],
+                    group: group[i].textContent
                 })
             }
         }
@@ -163,9 +170,9 @@ const ModalAddObject = ({ parent, show, setShow }) => {
 
     }
 
-    // useEffect(() => {
-    //     console.log(finalArr)
-    // }, [finalArr])
+    useEffect(() => {
+        console.log(finalArr)
+    }, [finalArr])
 
     return (
         <>
@@ -208,7 +215,9 @@ const ModalAddObject = ({ parent, show, setShow }) => {
 
                                 </div>
                                 <div className={`w-full flex flex-col md:flex-row gap-4 mb-4 items-center`}>
-                                    <div className="w-1/3 h-full"></div>
+                                    <div className="w-full md:w-1/3 mt-2 md:mt-0 h-full">
+                                        <Dropdown options={options} value={options[0]} onChange={handleShowInfo} placeholder="Nhóm đối tượng" placeholderClassName="text-gray-900 text-sm" className="dropdown" />
+                                    </div>
                                     <input type="text" id="point" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] pointNum`} onChange={handleShowInfo} placeholder="Nhập điểm (bằng số)" required />
                                     <input type="text" id="ratio" className={`bg-white border-[1px] w-full md:w-1/3 border-[rgba(0,0,0,0.5)] text-gray-900 text-sm rounded-lg block w-2/3 p-2.5 shadow-[4px_4px_4px_rgba(0,0,0,0.25)] ratioNum`} onChange={handleShowInfo} placeholder="Nhập tỷ trọng (bằng số)" required />
                                     {idx > 0 && (

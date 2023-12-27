@@ -1,18 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 
 import { useDispatch, useSelector } from "react-redux";
 import TabComponents from "../components/tabs/Tab";
 import RankingTab from "../components/RankingTab";
-import { getAllObject } from "../redux/slice/object.slice";
+import { getAllObject, getAllRanking, rankingGroup } from "../redux/slice/object.slice";
 
 const RankingPage = () => {
     const dispatch = useDispatch()
     const allObject = useSelector((state) => state.object.allObject)
+    const allRanking = useSelector((state) => state.object.allRanking)
+    const rankingGr = useSelector((state) => state.object.rankingGroup)
+
+    const [groupType, setGroupType] = useState('Âm nhạc')
 
     useEffect(() => {
-        dispatch(getAllObject())
+        dispatch(getAllRanking())
     }, [])
+
+    useEffect(() => {
+        if (groupType)
+            dispatch(rankingGroup({ group: groupType }))
+    }, [groupType])
+
     return (
         <>
             <div className="p-4">
@@ -25,9 +35,9 @@ const RankingPage = () => {
                     </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-8 mt-4">
-                    <TabComponents objects={allObject?.data} />
+                    <TabComponents groupType={groupType} setGroupType={setGroupType} objects={allRanking?.data} />
                     <div className="w-full md:w-1/3 rounded-lg overflow-hidden">
-                        <RankingTab objects={allObject?.data} />
+                        <RankingTab objects={rankingGr?.data} />
                     </div>
 
                 </div>

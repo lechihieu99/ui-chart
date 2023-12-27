@@ -2,7 +2,7 @@ import React from "react";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { Link } from "react-router-dom";
-const TabComponents = ({ objects }) => {
+const TabComponents = ({ setGroupType, groupType, objects }) => {
     const gradient = ['bg-gradient-to-r from-cyan-500 to-blue-500', 'bg-gradient-to-r from-sky-500 to-indigo-500',
         'bg-gradient-to-r from-violet-500 to-fuchsia-500', 'bg-gradient-to-r from-purple-500 to-pink-500']
 
@@ -17,8 +17,8 @@ const TabComponents = ({ objects }) => {
                 </TabList>
 
                 <TabPanel>
-                    {objects?.map((item, idx) => idx < 4 && (
-                        <p className={`w-full cursor-pointer rounded-lg my-2 text-white p-2 ${gradient[idx]}`}>{content[idx]}</p>
+                    {content?.map((item, idx) => (
+                        <p className={`w-full cursor-pointer ${groupType === content[idx] && "border-2 border-red-400"} rounded-lg my-2 text-white p-2 ${gradient[idx]}`} onClick={() => setGroupType(content[idx])}>{content[idx]}</p>
                     ))}
                 </TabPanel>
                 <TabPanel>
@@ -28,7 +28,7 @@ const TabComponents = ({ objects }) => {
                                 {objects?.map((stu, idx) => (
                                     <tr key={stu.id}>
 
-                                        <td className='p-2'>{stu.id}</td>
+                                        <td className='p-2'>{idx + 1}</td>
                                         <td className='p-2'>
                                             <Link to={`/object-user/${stu.id}`} className='flex items-center'>
                                                 <img src={stu.url} alt="" className='w-10 h-10 rounded-full object-center object-cover' />
