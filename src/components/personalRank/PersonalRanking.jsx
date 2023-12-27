@@ -1,5 +1,6 @@
 import { Minus, Plus } from "@phosphor-icons/react";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Chart from "../Chart";
 
 const PersonalRanking = ({ data, idx }) => {
@@ -22,8 +23,28 @@ const PersonalRanking = ({ data, idx }) => {
                         <Plus size={24} color='black' className="cursor-pointer" onClick={() => setShowData(true)} />
                     )}
                 </div>
-                {data?.asset && showData && (
-                    <Chart allInfo={data?.asset} />
+                {showData && (
+                    <div className="w-full">
+                        <div className="w-full flex gap-2 items-start">
+                            <strong>pointText:</strong>
+                            <p>{data?.pointText}</p>
+                        </div>
+                        <div className="w-full flex gap-2 items-start">
+                            <strong>ratioText:</strong>
+                            <p>{data?.ratioText}</p>
+                        </div>
+                        <div className="w-full flex gap-2 items-start">
+                            <strong>point:</strong>
+                            <p>{data?.point}</p>
+                        </div>
+                        <div className="w-full flex gap-2 items-start">
+                            <strong>ratio:</strong>
+                            <p>{data?.ratio}</p>
+                        </div>
+                        <Link to={`/object/${data?.id}`}>
+                            <span className="text-blue-400 w-full text-center">Xem chi tiết</span>
+                        </Link>
+                    </div>
                 )}
             </div>
         </>
